@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: kardex-service
+  labels:
+    app: kardex-service
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: kardex-service
+
+  template:
+    metadata:
+      labels:
+        app: kardex-service
+
+    spec:
+      initContainers:
+        - name: wait-for-infra
+          image: busybox
+          command: ['sh', '-c', 'until nc -z config-server 8081 && nc -z eureka-server 8761; do echo waiting for infra; sleep 2; done;']
+
+      containers:
+      - name: kardex-service
+        image: mharko/kardex-service:latest
+        imagePullPolicy: Always
+
+        env:
+        - name: URL_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: URL_CONFIG
+          
+        - name: EUREKA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: EUREKA_HOST
+
+        - name: EUREKA_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: EUREKA_PORT
+
+        - name: DB_HOST
+          value: "kardex-db"
+
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: DB_PORT
+
+        - name: DB_NAME
+          value: "kardex_db"
+
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: POSTGRES_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: POSTGRES_PASSWORD
+
+        - name: KEYCLOAK_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_URL
+
+        - name: KEYCLOAK_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_REALM
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kardex-service
+spec:
+  type: ClusterIP
+  selector:
+    app: kardex-service
+  ports:
+  - port: 80       
+    targetPort: 8080 

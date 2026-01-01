@@ -22,7 +22,7 @@ spec:
       containers:
       - name: config-server
         image: mharko/config-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         
         ports:
         - containerPort: 8081
@@ -36,8 +36,8 @@ spec:
 
         readinessProbe:
           httpGet: 
-          path: /actuator/health
-          port: 8081
+            path: /actuator/health
+            port: 8081
           initialDelaySeconds: 8
           periodSeconds: 10
 

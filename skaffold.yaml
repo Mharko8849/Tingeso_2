@@ -4,6 +4,8 @@ metadata:
   name: toolrent-microservices
 
 build:
+  local:
+    push: false
   artifacts:
     - image: mharko/eureka-server
       context: Backend/Infrastructure/eureka-service
@@ -70,3 +72,15 @@ portForward:
     resourceName: keycloak-service
     port: 9090
     localPort: 31000
+
+profiles:
+  - name: production
+    build:
+      local:
+        push: true
+    manifests:
+      rawYaml:
+        - Backend/Kubernetes-Config-Prod/Global/*.yaml
+        - Backend/Kubernetes-Config-Prod/DB/*.yaml
+        - Backend/Kubernetes-Config-Prod/Infrastructure/*.yaml
+        - Backend/Kubernetes-Config-Prod/Microservices/*.yaml

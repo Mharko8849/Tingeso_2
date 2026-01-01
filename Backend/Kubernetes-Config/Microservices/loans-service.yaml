@@ -19,10 +19,15 @@ spec:
         app: loans-service
 
     spec:
+      initContainers:
+        - name: wait-for-infra
+          image: busybox
+          command: ['sh', '-c', 'until nc -z config-server 8081 && nc -z eureka-server 8761; do echo waiting for infra; sleep 2; done;']
+
       containers:
       - name: loans-service
         image: mharko/loans-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG

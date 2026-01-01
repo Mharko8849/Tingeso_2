@@ -19,10 +19,11 @@ spec:
         app: users-service
 
     spec:
+          
       containers:
       - name: users-service
         image: mharko/users-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG

@@ -22,17 +22,10 @@ spec:
       containers:
       - name: eureka-server
         image: mharko/eureka-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         ports:
         - containerPort: 8761
-
-        env:
-        - name: URL_CONFIG
-          valueFrom:
-            configMapKeyRef:
-              name: global-config
-              key: URL_CONFIG
 
         resources:
           requests:
@@ -43,8 +36,8 @@ spec:
 
         readinessProbe:
           httpGet:
-          path: /actuator/health
-          port: 8761
+            path: /actuator/health
+            port: 8761
           initialDelaySeconds: 8
           periodSeconds: 10
 

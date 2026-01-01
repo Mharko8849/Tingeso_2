@@ -19,10 +19,11 @@ spec:
         app: gateway-server
 
     spec:
+      
       containers:
       - name: gateway-server
         image: mharko/gateway-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         ports:
         - containerPort: 8080
@@ -55,9 +56,9 @@ spec:
 
         readinessProbe:
           httpGet: 
-          path: /actuator/health
-          port: 8080
-          initialDelaySeconds: 8
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 15
           periodSeconds: 10
 
 ---

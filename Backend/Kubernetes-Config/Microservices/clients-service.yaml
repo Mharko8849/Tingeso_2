@@ -19,10 +19,11 @@ spec:
         app: clients-service
 
     spec:
+          
       containers:
       - name: clients-service
         image: mharko/clients-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG
