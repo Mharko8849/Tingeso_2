@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-config
+data:
+  POSTGRES_USER: "mharko"
+  DB_PORT: "5432"
+
+  EUREKA_HOST: "eureka-server"
+  EUREKA_PORT: "8761"
+
+  URL_CONFIG: "http://config-server:8081"
+
+  KEYCLOAK_URL: "http://keycloak-service:9090"
+  KEYCLOAK_REALM: "ToolRent"
+  KEYCLOAK_CLIENT_ID: "toolrent-backend"
+

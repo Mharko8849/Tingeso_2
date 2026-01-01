@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: inventory-db
+
+spec:
+  serviceName: "inventory-db"
+
+  replicas: 1
+  
+  selector:
+    matchLabels:
+      app: inventory-db
+  
+  template:
+    metadata:
+      labels:
+        app: inventory-db
+  
+    spec:
+      containers:
+      - name: inventory-db 
+        image: postgres:15-alpine
+  
+        ports:
+        - containerPort: 5432
+  
+        env:
+        - name: POSTGRES_DB
+          value: inventory_db
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: POSTGRES_USER
+
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: POSTGRES_PASSWORD
+
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits: 
+            memory: "512Mi"
+
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: inventory-db

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: clients-db
+
+spec:
+  serviceName: "clients-db"
+
+  replicas: 1
+  
+  selector:
+    matchLabels:
+      app: clients-db
+  
+  template:
+    metadata:
+      labels:
+        app: clients-db
+  
+    spec:
+      containers:
+      - name: clients-db 
+        image: postgres:15-alpine
+  
+        ports:
+        - containerPort: 5432
+  
+        env:
+        - name: POSTGRES_DB
+          value: clients_db
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: POSTGRES_USER
+
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: POSTGRES_PASSWORD
+
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits: 
+            memory: "512Mi"
+
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: clients-db
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: clients-db

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet 
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  serviceName: "keycloak-service" 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:21.1.1
+        imagePullPolicy: IfNotPresent
+        
+        args: ["start-dev", "--http-port=9090"]
+
+        ports:
+        - containerPort: 9090
+          name: http
+
+        env:
+        - name: KEYCLOAK_ADMIN
+          value: "admin"
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          value: "admin"
+        - name: KC_PROXY
+          value: "edge"
+
+        resources:
+          requests:
+            memory: "512Mi"
+          limits:
+            memory: "1024Mi"
+
+        volumeMounts:
+        - name: keycloak-data
+          mountPath: /opt/keycloak/data
+
+  volumeClaimTemplates:
+  - metadata:
+      name: keycloak-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+spec:
+  type: NodePort
+  selector:
+    app: keycloak
+  ports:
+  - port: 9090
+    targetPort: 9090
+    nodePort: 31000

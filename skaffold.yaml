@@ -1,0 +1,80 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: toolrent-microservices
+
+build:
+  artifacts:
+    - image: mharko/eureka-server
+      context: Backend/eureka-server
+      jib:
+        project: .
+
+    - image: mharko/config-server
+      context: Backend/config-server
+      jib:
+        project: .
+
+    - image: mharko/gateway-server
+      context: Backend/gateway-server
+      jib:
+        project: .
+
+    - image: mharko/amounts-service
+      context: Backend/amounts-service
+      jib:
+        proyect: .
+
+    - image: mharko/clients-service
+      context: Backend/clients-service
+      jib:
+        proyect: .
+
+    - image: mharko/inventory-service
+      context: Backend/inventory-service
+      jib:
+        project: .
+
+    - image: mharko/kardex-service
+      context: Backend/kardex-service
+      jib:
+        proyect: .
+
+    - image: mharko/loans-service
+      context: Backend/loans-service
+      jib:
+        proyect: .
+
+    - image: mharko/reports-service
+      context: Backend/reports-service
+      jib:
+        proyect: .
+
+    - image: mharko/users-service
+      context: Backend/users-service
+      jib:
+        proyect: .
+
+deploy:
+  kubectl:
+    manifests:
+      - Backend/Kubernetes-Config/Global/*.yaml
+      - Backend/Kubernetes-Config/DB/*.yaml
+      - Backend/Kubernetes-Config/Infrastructure/*.yaml
+      - Backend/Kubernetes-Config/Microservices/*.yaml
+
+portForward:
+  - resourceType: service
+    resourceName: gateway-server
+    port: 8080
+    localPort: 8080
+  
+  - resourceType: service
+    resourceName: eureka-server
+    port: 8761
+    localPort: 8761
+    
+  - resourceType: service
+    resourceName: keycloak-service
+    port: 9090
+    localPort: 31000
