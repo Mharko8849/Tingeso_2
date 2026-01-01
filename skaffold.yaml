@@ -23,12 +23,12 @@ build:
     - image: mharko/amounts-service
       context: Backend/amounts-service
       jib:
-        proyect: .
+        project: .
 
     - image: mharko/clients-service
       context: Backend/clients-service
       jib:
-        proyect: .
+        project: .
 
     - image: mharko/inventory-service
       context: Backend/inventory-service
@@ -38,22 +38,22 @@ build:
     - image: mharko/kardex-service
       context: Backend/kardex-service
       jib:
-        proyect: .
+        project: .
 
     - image: mharko/loans-service
       context: Backend/loans-service
       jib:
-        proyect: .
+        project: .
 
     - image: mharko/reports-service
       context: Backend/reports-service
       jib:
-        proyect: .
+        project: .
 
     - image: mharko/users-service
       context: Backend/users-service
       jib:
-        proyect: .
+        project: .
 
 deploy:
   kubectl:

@@ -67,6 +67,18 @@ spec:
               name: db-credentials
               key: POSTGRES_PASSWORD
 
+        - name: KEYCLOAK_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_URL
+
+        - name: KEYCLOAK_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_REALM
+
         resources:
           requests:
             memory: "256Mi"
