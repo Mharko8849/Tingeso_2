@@ -7,53 +7,43 @@ build:
   artifacts:
     - image: mharko/eureka-server
       context: Backend/Infrastructure/eureka-service
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/config-server
       context: Backend/Infrastructure/config-service
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/gateway-server
       context: Backend/Infrastructure/gateway-service
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/amounts-service
       context: Backend/Microservices/amounts
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/clients-service
       context: Backend/Microservices/clients
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/inventory-service
       context: Backend/Microservices/inventory
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/kardex-service
       context: Backend/Microservices/kardex
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/loans-service
       context: Backend/Microservices/loans
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/reports-service
       context: Backend/Microservices/reports
-      jib:
-        project: .
+      jib: {}
 
     - image: mharko/users-service
       context: Backend/Microservices/users
-      jib:
-        project: .
+      jib: {}
 
 manifests:
   rawYaml:
