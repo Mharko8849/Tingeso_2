@@ -6,62 +6,64 @@ metadata:
 build:
   artifacts:
     - image: mharko/eureka-server
-      context: Backend/eureka-server
+      context: Backend/Infrastructure/eureka-service
       jib:
         project: .
 
     - image: mharko/config-server
-      context: Backend/config-server
+      context: Backend/Infrastructure/config-service
       jib:
         project: .
 
     - image: mharko/gateway-server
-      context: Backend/gateway-server
+      context: Backend/Infrastructure/gateway-service
       jib:
         project: .
 
     - image: mharko/amounts-service
-      context: Backend/amounts-service
+      context: Backend/Microservices/amounts
       jib:
         project: .
 
     - image: mharko/clients-service
-      context: Backend/clients-service
+      context: Backend/Microservices/clients
       jib:
         project: .
 
     - image: mharko/inventory-service
-      context: Backend/inventory-service
+      context: Backend/Microservices/inventory
       jib:
         project: .
 
     - image: mharko/kardex-service
-      context: Backend/kardex-service
+      context: Backend/Microservices/kardex
       jib:
         project: .
 
     - image: mharko/loans-service
-      context: Backend/loans-service
+      context: Backend/Microservices/loans
       jib:
         project: .
 
     - image: mharko/reports-service
-      context: Backend/reports-service
+      context: Backend/Microservices/reports
       jib:
         project: .
 
     - image: mharko/users-service
-      context: Backend/users-service
+      context: Backend/Microservices/users
       jib:
         project: .
 
+manifests:
+  rawYaml:
+    - Backend/Kubernetes-Config/Global/*.yaml
+    - Backend/Kubernetes-Config/DB/*.yaml
+    - Backend/Kubernetes-Config/Infrastructure/*.yaml
+    - Backend/Kubernetes-Config/Microservices/*.yaml
+
 deploy:
-  kubectl:
-    manifests:
-      - Backend/Kubernetes-Config/Global/*.yaml
-      - Backend/Kubernetes-Config/DB/*.yaml
-      - Backend/Kubernetes-Config/Infrastructure/*.yaml
-      - Backend/Kubernetes-Config/Microservices/*.yaml
+  kubectl: {}
 
 portForward:
   - resourceType: service
