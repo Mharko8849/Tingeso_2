@@ -9,6 +9,9 @@ metadata:
 spec:
   replicas: 1
 
+  strategy:
+    type: Recreate
+
   selector:
     matchLabels:
       app: reports-service
@@ -20,6 +23,11 @@ spec:
 
     spec:
           
+      initContainers:
+      - name: wait-for-config-server
+        image: busybox
+        command: ['sh', '-c', 'until nc -z config-server 8081; do echo waiting for config-server; sleep 2; done;']
+
       containers:
       - name: reports-service
         image: mharko/reports-service:latest

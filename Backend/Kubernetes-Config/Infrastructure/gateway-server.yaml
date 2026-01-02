@@ -20,6 +20,11 @@ spec:
 
     spec:
       
+      initContainers:
+      - name: wait-for-infra
+        image: busybox
+        command: ['sh', '-c', 'until nc -z config-server 8081 && nc -z eureka-server 8761; do echo waiting for infra; sleep 2; done;']
+
       containers:
       - name: gateway-server
         image: mharko/gateway-server:latest
@@ -50,9 +55,10 @@ spec:
         resources:
           requests:
             memory: "256Mi"
-            cpu: "250m"
+            cpu: "100m"
           limits:
             memory: "512Mi"
+            cpu: "1000m"
 
         readinessProbe:
           httpGet: 

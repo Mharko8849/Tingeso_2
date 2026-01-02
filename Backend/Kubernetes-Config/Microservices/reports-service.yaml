@@ -9,6 +9,9 @@ metadata:
 spec:
   replicas: 1
 
+  strategy:
+    type: Recreate
+
   selector:
     matchLabels:
       app: reports-service
@@ -19,10 +22,11 @@ spec:
         app: reports-service
 
     spec:
+      
       initContainers:
-        - name: wait-for-infra
-          image: busybox
-          command: ['sh', '-c', 'until nc -z config-server 8081 && nc -z eureka-server 8761; do echo waiting for infra; sleep 2; done;']
+      - name: wait-for-config-server
+        image: busybox
+        command: ['sh', '-c', 'until nc -z config-server 8081; do echo waiting for config-server; sleep 2; done;']
 
       containers:
       - name: reports-service
