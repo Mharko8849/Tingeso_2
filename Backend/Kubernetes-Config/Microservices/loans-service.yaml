@@ -88,6 +88,48 @@ spec:
               name: global-config
               key: KEYCLOAK_REALM
 
+        - name: KEYCLOAK_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_ID
+
+        - name: KEYCLOAK_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_SECRET
+
+        - name: MS_INVENTORY_INVENTORY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_INVENTORY_INVENTORY_URL
+
+        - name: MS_INVENTORY_TOOLS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_INVENTORY_TOOLS_URL
+
+        - name: MS_USERS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_USERS_URL
+
+        - name: MS_CLIENTS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_CLIENTS_URL
+
+        - name: MS_KARDEX_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_KARDEX_URL
+
         resources:
           requests:
             memory: "256Mi"

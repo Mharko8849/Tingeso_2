@@ -45,16 +45,17 @@ public class KardexController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
-    public ResponseEntity<Kardex> createKardex(
-            @RequestParam Long toolId,
-            @RequestParam String type,
-            @RequestParam Date actualDate,
-            @RequestParam int cant,
-            @RequestParam(required = false) Integer cost,
-            @RequestParam(required = false) Long userId,
-            @RequestParam Long employeeId
-    ) {
-        Kardex newKardex = kardexService.createKardex(toolId, type, actualDate, cant, cost, userId, employeeId);
+    public ResponseEntity<Kardex> createKardex(@RequestBody Kardex request) {
+
+        Kardex newKardex = kardexService.createKardex(
+                request.getToolId(),
+                request.getType(),
+                request.getDate(),
+                request.getCant(),
+                request.getCost(),
+                request.getUserId(),
+                request.getEmployeeId()
+        );
         return ResponseEntity.ok(newKardex);
     }
 

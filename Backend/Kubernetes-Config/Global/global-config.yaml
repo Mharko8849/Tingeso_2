@@ -16,6 +16,15 @@ data:
   KEYCLOAK_CLIENT_ID: "toolrent-backend"
   KEYCLOAK_CLIENT_SECRET: "dVXW9tfHmjPMNBSEGgWI6SpDZg06YctP"
 
-  MS_INVENTORY_TOOLS: "http://inventory-service/tools"
-  MS_INVENTORY_INVENTORY: "http://inventory-service/inventory"
+  MS_INVENTORY_TOOLS_URL: "http://inventory-service/tools"
+  MS_INVENTORY_INVENTORY_URL: "http://inventory-service/inventory"
 
+  MS_CLIENTS_URL: "http://clients-service/clients"
+
+  MS_USERS_URL: "http://users-service/users"
+
+  MS_AMOUNTS_URL: "http://amounts-service/amounts"
+
+  MS_KARDEX_URL: "http://kardex-service/kardex"
+
+  MS_LOANS_URL: "http://loans-service/loans"

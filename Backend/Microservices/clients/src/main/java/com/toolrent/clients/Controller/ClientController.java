@@ -72,4 +72,11 @@ public class ClientController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/state/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN', 'SUPERADMIN')")
+    public ResponseEntity<Void> updateState(@PathVariable Long userId, @RequestParam String state) {
+        clientService.updateClientState(userId, state);
+        return ResponseEntity.ok().build();
+    }
+
 }

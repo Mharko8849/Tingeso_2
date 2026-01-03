@@ -89,6 +89,16 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
+    public void updateClientState(Long userId, String newState) {
+        Client client = clientRepository.findByUserId(userId);
+        if (client == null) {
+            throw new RuntimeException("Cliente no encontrado para actualizar estado");
+        }
+
+        client.setStateClient(newState);
+        clientRepository.save(client);
+    }
+
     public List<ClientFull> filterByState(String state) {
         if (state == null || state.isBlank()) {
             return getAllClients();

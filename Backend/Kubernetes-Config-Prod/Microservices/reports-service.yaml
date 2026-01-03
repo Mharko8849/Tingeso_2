@@ -88,6 +88,18 @@ spec:
               name: global-config
               key: KEYCLOAK_REALM
 
+        - name: KEYCLOAK_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_ID
+
+        - name: KEYCLOAK_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_SECRET
+
         resources:
           requests:
             memory: "256Mi"

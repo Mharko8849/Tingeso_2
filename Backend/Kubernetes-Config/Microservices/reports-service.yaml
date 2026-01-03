@@ -88,6 +88,30 @@ spec:
               name: global-config
               key: KEYCLOAK_REALM
 
+        - name: KEYCLOAK_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_ID
+
+        - name: KEYCLOAK_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_CLIENT_SECRET
+
+        - name: MS_LOANS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_LOANS_URL
+
+        - name: MS_KARDEX_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_KARDEX_URL
+
         resources:
           requests:
             memory: "256Mi"
