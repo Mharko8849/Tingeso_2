@@ -57,22 +57,6 @@ manifests:
 deploy:
   kubectl: {}
 
-portForward:
-  - resourceType: service
-    resourceName: gateway-server
-    port: 8080
-    localPort: 8080
-  
-  - resourceType: service
-    resourceName: eureka-server
-    port: 8761
-    localPort: 8761
-    
-  - resourceType: service
-    resourceName: keycloak-service
-    port: 9090
-    localPort: 31000
-
 profiles:
   - name: production
     build:

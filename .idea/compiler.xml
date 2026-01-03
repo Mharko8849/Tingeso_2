@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="gateway-service.main" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="amounts" options="-parameters" />
+      <module name="amounts.main" options="-parameters" />
+      <module name="amounts.test" options="-parameters" />
+      <module name="clients" options="-parameters" />
+      <module name="clients.main" options="-parameters" />
+      <module name="clients.test" options="-parameters" />
+      <module name="config-service" options="-parameters" />
+      <module name="config-service.main" options="-parameters" />
+      <module name="config-service.test" options="-parameters" />
+      <module name="eureka-service" options="-parameters" />
+      <module name="eureka-service.main" options="-parameters" />
+      <module name="eureka-service.test" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
+      <module name="gateway-service.main" options="-parameters" />
+      <module name="gateway-service.test" options="-parameters" />
+      <module name="inventory" options="-parameters" />
+      <module name="inventory.main" options="-parameters" />
+      <module name="inventory.test" options="-parameters" />
+      <module name="kardex" options="-parameters" />
+      <module name="kardex.main" options="-parameters" />
+      <module name="kardex.test" options="-parameters" />
+      <module name="loans" options="-parameters" />
+      <module name="loans.main" options="-parameters" />
+      <module name="loans.test" options="-parameters" />
+      <module name="reports" options="-parameters" />
+      <module name="reports.main" options="-parameters" />
+      <module name="reports.test" options="-parameters" />
+      <module name="users" options="-parameters" />
+      <module name="users.main" options="-parameters" />
+      <module name="users.test" options="-parameters" />
+    </option>
+  </component>
+</project>

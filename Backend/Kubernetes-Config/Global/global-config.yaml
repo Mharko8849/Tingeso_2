@@ -14,4 +14,8 @@ data:
   KEYCLOAK_URL: "http://keycloak-service:9090"
   KEYCLOAK_REALM: "ToolRent"
   KEYCLOAK_CLIENT_ID: "toolrent-backend"
+  KEYCLOAK_CLIENT_SECRET: "dVXW9tfHmjPMNBSEGgWI6SpDZg06YctP"
+
+  MS_INVENTORY_TOOLS: "http://inventory-service/tools"
+  MS_INVENTORY_INVENTORY: "http://inventory-service/inventory"
 

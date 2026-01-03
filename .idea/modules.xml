@@ -3,6 +3,16 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Tingeso_2.iml" filepath="$PROJECT_DIR$/.idea/Tingeso_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/amounts.main.iml" filepath="$PROJECT_DIR$/.idea/modules/amounts.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/clients.main.iml" filepath="$PROJECT_DIR$/.idea/modules/clients.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/config-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/config-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/eureka-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/eureka-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inventory.main.iml" filepath="$PROJECT_DIR$/.idea/modules/inventory.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kardex.main.iml" filepath="$PROJECT_DIR$/.idea/modules/kardex.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/loans.main.iml" filepath="$PROJECT_DIR$/.idea/modules/loans.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/reports.main.iml" filepath="$PROJECT_DIR$/.idea/modules/reports.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/users.main.iml" filepath="$PROJECT_DIR$/.idea/modules/users.main.iml" />
     </modules>
   </component>
 </project>

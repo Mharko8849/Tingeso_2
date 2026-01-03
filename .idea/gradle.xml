@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Infrastructure/config-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Infrastructure/config-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Infrastructure/eureka-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Infrastructure/eureka-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Infrastructure/gateway-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Infrastructure/gateway-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/amounts" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/amounts" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/clients" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/clients" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/inventory" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/inventory" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/kardex" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/kardex" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/loans" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/loans" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/reports" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/reports" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Backend/Microservices/users" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Backend/Microservices/users" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
