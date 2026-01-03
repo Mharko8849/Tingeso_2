@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 
 metadata:
-  name: reports-db
+  name: reports-db-prod
 
 spec:
-  serviceName: "reports-db"
+  serviceName: "reports-db-prod"
 
   replicas: 1
   
   selector:
     matchLabels:
-      app: reports-db
+      app: reports-db-prod
   
   template:
     metadata:
       labels:
-        app: reports-db
+        app: reports-db-prod
   
     spec:
       containers:
-      - name: reports-db 
+      - name: reports-db-prod 
         image: postgres:15-alpine
   
         ports:
@@ -28,7 +28,7 @@ spec:
   
         env:
         - name: POSTGRES_DB
-          value: reports_db
+          value: reports_db_prod
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: reports-db
+  name: reports-db-prod
 spec:
   ports:
   - port: 5432
   selector:
-    app: reports-db
+    app: reports-db-prod

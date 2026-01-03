@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 
 metadata:
-  name: amounts-db
+  name: amounts-db-prod
 
 spec:
-  serviceName: "amounts-db"
+  serviceName: "amounts-db-prod"
 
   replicas: 1
   
   selector:
     matchLabels:
-      app: amounts-db
+      app: amounts-db-prod
   
   template:
     metadata:
       labels:
-        app: amounts-db
+        app: amounts-db-prod
   
     spec:
       containers:
-      - name: amounts-db 
+      - name: amounts-db-prod 
         image: postgres:15-alpine
   
         ports:
@@ -28,7 +28,7 @@ spec:
   
         env:
         - name: POSTGRES_DB
-          value: amounts_db
+          value: amounts_db_prod
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: amounts-db
+  name: amounts-db-prod
 spec:
   ports:
   - port: 5432
   selector:
-    app: amounts-db
+    app: amounts-db-prod

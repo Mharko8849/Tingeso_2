@@ -22,7 +22,7 @@ spec:
         app: reports-service
 
     spec:
-          
+      
       initContainers:
       - name: wait-for-config-server
         image: busybox
@@ -31,7 +31,7 @@ spec:
       containers:
       - name: reports-service
         image: mharko/reports-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG
@@ -53,7 +53,7 @@ spec:
               key: EUREKA_PORT
 
         - name: DB_HOST
-          value: "reports-db"
+          value: "reports-db-prod"
 
         - name: DB_PORT
           valueFrom:
@@ -62,7 +62,7 @@ spec:
               key: DB_PORT
 
         - name: DB_NAME
-          value: "reports_db"
+          value: "reports_db_prod"
 
         - name: DB_USER
           valueFrom:
@@ -99,6 +99,18 @@ spec:
             configMapKeyRef:
               name: global-config
               key: KEYCLOAK_CLIENT_SECRET
+
+        - name: MS_LOANS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_LOANS_URL
+
+        - name: MS_KARDEX_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_KARDEX_URL
 
         resources:
           requests:

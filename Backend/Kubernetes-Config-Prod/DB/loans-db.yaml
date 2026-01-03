@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 
 metadata:
-  name: loans-db
+  name: loans-db-prod
 
 spec:
-  serviceName: "loans-db"
+  serviceName: "loans-db-prod"
 
   replicas: 1
   
   selector:
     matchLabels:
-      app: loans-db
+      app: loans-db-prod
   
   template:
     metadata:
       labels:
-        app: loans-db
+        app: loans-db-prod
   
     spec:
       containers:
-      - name: loans-db 
+      - name: loans-db-prod 
         image: postgres:15-alpine
   
         ports:
@@ -28,7 +28,7 @@ spec:
   
         env:
         - name: POSTGRES_DB
-          value: loans_db
+          value: loans_db_prod
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: loans-db
+  name: loans-db-prod
 spec:
   ports:
   - port: 5432
   selector:
-    app: loans-db
+    app: loans-db-prod

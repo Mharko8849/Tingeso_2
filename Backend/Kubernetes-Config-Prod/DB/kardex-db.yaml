@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 
 metadata:
-  name: kardex-db
+  name: kardex-db-prod
 
 spec:
-  serviceName: "kardex-db"
+  serviceName: "kardex-db-prod"
 
   replicas: 1
   
   selector:
     matchLabels:
-      app: kardex-db
+      app: kardex-db-prod
   
   template:
     metadata:
       labels:
-        app: kardex-db
+        app: kardex-db-prod
   
     spec:
       containers:
-      - name: kardex-db 
+      - name: kardex-db-prod 
         image: postgres:15-alpine
   
         ports:
@@ -28,7 +28,7 @@ spec:
   
         env:
         - name: POSTGRES_DB
-          value: kardex_db
+          value: kardex_db_prod
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kardex-db
+  name: kardex-db-prod
 spec:
   ports:
   - port: 5432
   selector:
-    app: kardex-db
+    app: kardex-db-prod

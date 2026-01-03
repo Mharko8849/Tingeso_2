@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: StatefulSet
 
 metadata:
-  name: users-db
+  name: users-db-prod
 
 spec:
-  serviceName: "users-db"
+  serviceName: "users-db-prod"
 
   replicas: 1
   
   selector:
     matchLabels:
-      app: users-db
+      app: users-db-prod
   
   template:
     metadata:
       labels:
-        app: users-db
+        app: users-db-prod
   
     spec:
       containers:
-      - name: users-db 
+      - name: users-db-prod 
         image: postgres:15-alpine
   
         ports:
@@ -28,7 +28,7 @@ spec:
   
         env:
         - name: POSTGRES_DB
-          value: users_db
+          value: users_db_prod
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
@@ -68,9 +68,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: users-db
+  name: users-db-prod
 spec:
   ports:
   - port: 5432
   selector:
-    app: users-db
+    app: users-db-prod

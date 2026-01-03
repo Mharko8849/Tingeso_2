@@ -22,7 +22,7 @@ spec:
       containers:
       - name: eureka-server
         image: mharko/eureka-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         ports:
         - containerPort: 8761

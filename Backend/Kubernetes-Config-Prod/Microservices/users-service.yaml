@@ -31,7 +31,7 @@ spec:
       containers:
       - name: users-service
         image: mharko/users-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG
@@ -53,7 +53,7 @@ spec:
               key: EUREKA_PORT
 
         - name: DB_HOST
-          value: "users-db"
+          value: "users-db-prod"
 
         - name: DB_PORT
           valueFrom:
@@ -62,7 +62,7 @@ spec:
               key: DB_PORT
 
         - name: DB_NAME
-          value: "users_db"
+          value: "users_db_prod"
 
         - name: DB_USER
           valueFrom:
@@ -99,6 +99,12 @@ spec:
             configMapKeyRef:
               name: global-config
               key: KEYCLOAK_CLIENT_SECRET
+
+        - name: MS_CLIENTS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: MS_CLIENTS_URL
 
         resources:
           requests:

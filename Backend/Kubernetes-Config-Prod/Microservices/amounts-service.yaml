@@ -22,7 +22,7 @@ spec:
         app: amounts-service
 
     spec:
-          
+
       initContainers:
       - name: wait-for-config-server
         image: busybox
@@ -31,7 +31,7 @@ spec:
       containers:
       - name: amounts-service
         image: mharko/amounts-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 
         env:
         - name: URL_CONFIG
@@ -53,7 +53,7 @@ spec:
               key: EUREKA_PORT
 
         - name: DB_HOST
-          value: "amounts-db"
+          value: "amounts-db-prod"
 
         - name: DB_PORT
           valueFrom:
@@ -62,7 +62,7 @@ spec:
               key: DB_PORT
 
         - name: DB_NAME
-          value: "amounts_db"
+          value: "amounts_db_prod"
 
         - name: DB_USER
           valueFrom:
