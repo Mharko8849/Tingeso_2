@@ -3,11 +3,13 @@ import NavBar from '../components/Layout/NavBar';
 import UserRegisterForm from '../components/Register/UserRegisterForm';
 import api from '../services/http-common';
 import BackButton from '../components/Common/BackButton';
+import TransitionAlert from '../components/Alerts/TransitionAlert';
 
 const UsersDetails = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     fetchUser();
@@ -31,30 +33,20 @@ const UsersDetails = () => {
       const updatedUser = {
         ...user,
         ...formData,
-        // If password is empty, don't send it (or backend handles it? usually backend ignores if null/empty, 
-        // but here we are sending the whole object. If password is empty string, we might need to handle it.
-        // However, UserRegisterForm sends password field. 
-        // If the backend updates password only if not empty, we are good.
-        // If the backend hashes the password, we need to be careful.
-        // Let's assume the backend handles password update if provided.
       };
-      
-      // If password is empty string, remove it from payload if possible, 
-      // OR rely on backend logic. 
-      // Looking at UserRegisterForm, it sets password in state.
-      // If user didn't type password, it's empty string.
-      // We should probably check if password is changed.
-      
+
       if (!formData.password) {
         delete updatedUser.password;
       }
 
       await api.put('/users', updatedUser);
-      alert('Información actualizada correctamente.');
+      setAlert({ severity: 'success', message: 'Información actualizada correctamente.' });
       // Refresh user data
       fetchUser();
     } catch (err) {
       console.error(err);
+      const errMsg = err.response?.data?.error || err.message || 'Error al actualizar información.';
+      setAlert({ severity: 'error', message: errMsg });
       throw err; // UserRegisterForm will catch and display error
     }
   };
@@ -77,11 +69,14 @@ const UsersDetails = () => {
     <div className="page-container">
       <NavBar />
       <div className="content-wrap" style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ width: '100%', maxWidth: 900, marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ width: '100%', maxWidth: 900, marginBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ margin: 0 }}>Ajustes de Usuario</h2>
             <BackButton to="/" />
+          </div>
+          <TransitionAlert alert={alert} onClose={() => setAlert(null)} />
         </div>
-        
+
         <UserRegisterForm
           initial={user}
           isEditMode={true}
@@ -89,8 +84,8 @@ const UsersDetails = () => {
           submitLabel="Guardar cambios"
           onSubmit={handleUpdate}
           readOnlyFields={readOnlyFields}
-          hideRoleField={true} 
-          requirePassword={true} 
+          hideRoleField={true}
+          requirePassword={true}
         />
       </div>
     </div>

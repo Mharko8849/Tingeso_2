@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/http-common';
-import { TOOL_CATEGORIES } from '../../constants/toolCategories';
 import './ModalAddStockTool.css';
 
 const ModalAddNewTool = ({ open, onClose, onAdded }) => {
@@ -9,6 +8,21 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (open) {
+      const fetchCategories = async () => {
+        try {
+          const res = await api.get('/category');
+          setCategories(res.data || []);
+        } catch (e) {
+          console.error('Failed to fetch categories', e);
+        }
+      };
+      fetchCategories();
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -27,25 +41,37 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
       const userId = me.data?.id;
       if (!userId) throw new Error('Usuario no identificado');
 
-      // construir objeto tool que coincida con ToolEntity en backend
-      const tool = {
-        toolName: String(form.toolName).trim(),
-        category: form.category || '',
-        repoCost: Math.round(repoCost),
-        priceRent: Math.round(priceRent),
-        priceFineAtDate: Math.round(priceFineAtDate),
-      };
+      let imageFilename = null;
 
-      // construir FormData multipart con parte "tool" (JSON) + "image"
-      const formData = new FormData();
-      formData.append('tool', new Blob([JSON.stringify(tool)], { type: 'application/json' }));
-
+      // Upload image first if provided
       if (file) {
-        formData.append('image', file);
+        const imageFormData = new FormData();
+        imageFormData.append('file', file);
+
+        const uploadRes = await api.post('/tools/upload-image', imageFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        imageFilename = uploadRes.data?.filename;
       }
 
-      await api.post(`/api/tool/user/${userId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // Construct ToolInput with image filename
+      const toolInput = {
+        tool: {
+          toolName: String(form.toolName).trim(),
+          categoryId: Number(form.category) || null,
+          imageUrl: imageFilename || null,
+        },
+        amounts: {
+          repoCost: Math.round(repoCost),
+          priceRent: Math.round(priceRent),
+          priceFineAtDate: Math.round(priceFineAtDate),
+        }
+      };
+
+      // Create tool
+      await api.post('/tools', toolInput, {
+        params: { userId }
       });
 
       if (onAdded) onAdded();
@@ -97,66 +123,66 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
         </button>
         <h3 className="mas-title">Añadir nueva herramienta</h3>
         <div className="mas-content">
-        <div className="mas-row">
-          <label>Nombre</label>
-          <input value={form.toolName} onChange={(e) => setForm((s) => ({ ...s, toolName: e.target.value }))} />
-        </div>
+          <div className="mas-row">
+            <label>Nombre</label>
+            <input value={form.toolName} onChange={(e) => setForm((s) => ({ ...s, toolName: e.target.value }))} />
+          </div>
 
-        <div className="mas-row">
-          <label>Categoría</label>
-          <select 
-            value={form.category} 
-            onChange={(e) => setForm((s) => ({ ...s, category: e.target.value }))}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          >
-            <option value="">Seleccionar categoría</option>
-            {TOOL_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
+          <div className="mas-row">
+            <label>Categoría</label>
+            <select
+              value={form.category}
+              onChange={(e) => setForm((s) => ({ ...s, category: e.target.value }))}
+              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+            >
+              <option value="">Seleccionar categoría</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="mas-row">
-          <label>Precio reposición</label>
-          <input type="number" value={form.repoCost} onChange={(e) => setForm((s) => ({ ...s, repoCost: e.target.value }))} />
-        </div>
+          <div className="mas-row">
+            <label>Precio reposición</label>
+            <input type="number" value={form.repoCost} onChange={(e) => setForm((s) => ({ ...s, repoCost: e.target.value }))} />
+          </div>
 
-        <div className="mas-row">
-          <label>Precio arriendo</label>
-          <input type="number" value={form.priceRent} onChange={(e) => setForm((s) => ({ ...s, priceRent: e.target.value }))} />
-        </div>
+          <div className="mas-row">
+            <label>Precio arriendo</label>
+            <input type="number" value={form.priceRent} onChange={(e) => setForm((s) => ({ ...s, priceRent: e.target.value }))} />
+          </div>
 
-        <div className="mas-row">
-          <label>Tarifa multa por día</label>
-          <input type="number" value={form.priceFineAtDate} onChange={(e) => setForm((s) => ({ ...s, priceFineAtDate: e.target.value }))} />
-        </div>
+          <div className="mas-row">
+            <label>Tarifa multa por día</label>
+            <input type="number" value={form.priceFineAtDate} onChange={(e) => setForm((s) => ({ ...s, priceFineAtDate: e.target.value }))} />
+          </div>
 
-        <div className="mas-row">
-          <label>Imagen (opcional)</label>
-          <div
-            className={`mas-file-wrapper ${isDragging ? 'mas-file-wrapper-dragging' : ''}`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <label className="mas-file-button">
-              Seleccionar archivo
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
-                style={{ display: 'none' }}
-              />
-            </label>
-            <div className="mas-file-name">
-              {file
-                ? file.name
-                : 'Haz clic para seleccionar o arrastra y suelta una imagen aquí'}
+          <div className="mas-row">
+            <label>Imagen (opcional)</label>
+            <div
+              className={`mas-file-wrapper ${isDragging ? 'mas-file-wrapper-dragging' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <label className="mas-file-button">
+                Seleccionar archivo
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              <div className="mas-file-name">
+                {file
+                  ? file.name
+                  : 'Haz clic para seleccionar o arrastra y suelta una imagen aquí'}
+              </div>
             </div>
           </div>
-        </div>
 
-        {error && <div className="mas-error">{error}</div>}
+          {error && <div className="mas-error">{error}</div>}
 
         </div>
 

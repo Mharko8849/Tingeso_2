@@ -54,23 +54,23 @@ const OrdersCreateClient = () => {
         if (!employeeId) throw new Error('No se pudo obtener el id del empleado');
         // call create loan with init and return dates as request params
         // Backend expects: POST /loans/create/{userId}?employeeId=...&initDate=...&returnDate=...
-        const clientId = selected.id || selected; 
+        const clientId = selected.userId || selected.id || selected;
         const resp = await api.post(`/loans/create/${clientId}`, null, { params: { employeeId, initDate, returnDate } });
         const created = resp.data;
         if (created && created.id) {
           try { sessionStorage.setItem('order_loan_id', String(created.id)); } catch (e) { /* ignore */ }
         }
-          // store selected client in session so next step can read it
-          try {
-            sessionStorage.setItem('order_selected_client', JSON.stringify(selected));
-            // clear any previous items/resume from earlier incomplete orders so this is a fresh order
-            sessionStorage.removeItem('order_items');
-            sessionStorage.removeItem('order_resume');
-          } catch (e) { console.warn('sessionStorage not available', e); }
+        // store selected client in session so next step can read it
+        try {
+          sessionStorage.setItem('order_selected_client', JSON.stringify(selected));
+          // clear any previous items/resume from earlier incomplete orders so this is a fresh order
+          sessionStorage.removeItem('order_items');
+          sessionStorage.removeItem('order_resume');
+        } catch (e) { console.warn('sessionStorage not available', e); }
         // navigate to tools step
         window.history.pushState({}, '', '/admin/orders/create/tools');
         window.dispatchEvent(new PopStateEvent('popstate'));
-        } catch (e) {
+      } catch (e) {
         console.warn('No se pudo crear el borrador del pedido al presionar Siguiente', e?.response?.data || e.message || e);
         show({ severity: 'error', message: 'No se pudo iniciar el pedido en el servidor. Intenta nuevamente.' });
       } finally {
@@ -83,11 +83,11 @@ const OrdersCreateClient = () => {
     // sensible defaults: init = today, return = tomorrow
     try {
       const today = new Date();
-      const iso = d => d.toISOString().slice(0,10);
+      const iso = d => d.toISOString().slice(0, 10);
       setInitDate(iso(today));
-      const plus1 = new Date(today.getTime() + 1*24*60*60*1000);
+      const plus1 = new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000);
       setReturnDate(iso(plus1));
-    } catch(e) { /* ignore */ }
+    } catch (e) { /* ignore */ }
   }, []);
 
   const isDatesValid = () => {
@@ -95,8 +95,8 @@ const OrdersCreateClient = () => {
     try {
       const dInit = new Date(initDate);
       const dRet = new Date(returnDate);
-      return dRet.getTime() - dInit.getTime() >= 24*60*60*1000;
-    } catch(e) { return false; }
+      return dRet.getTime() - dInit.getTime() >= 24 * 60 * 60 * 1000;
+    } catch (e) { return false; }
   };
 
   return (
@@ -123,7 +123,7 @@ const OrdersCreateClient = () => {
                 <label style={{ fontSize: 16, fontWeight: 700 }}>Buscar cliente</label>
                 <div>
                   <button onClick={() => setShowRegister((s) => !s)} className="primary-cta" type="button">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff"/></svg>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff" /></svg>
                     <span style={{ marginLeft: 8 }}>Añadir Cliente</span>
                   </button>
                 </div>
@@ -164,13 +164,13 @@ const OrdersCreateClient = () => {
                       setSelected(toAppend);
                       // trigger client list reload so ClientSearch refetches and shows the new client
                       setClientListReload((s) => s + 1);
-                      try { 
-                        sessionStorage.setItem('order_selected_client', JSON.stringify(toAppend)); 
+                      try {
+                        sessionStorage.setItem('order_selected_client', JSON.stringify(toAppend));
                         // clear any previous pending order data
                         sessionStorage.removeItem('order_items');
                         sessionStorage.removeItem('order_resume');
                         sessionStorage.removeItem('order_loan_id');
-                      } catch (e) {}
+                      } catch (e) { }
                       setShowRegister(false);
                       show({ severity: 'success', message: 'La cuenta ha sido registrada exitosamente.' });
                     } catch (e) {
@@ -222,7 +222,7 @@ const OrdersCreateClient = () => {
                           sessionStorage.removeItem('order_items');
                           sessionStorage.removeItem('order_loan_id');
                           sessionStorage.removeItem('order_resume');
-                        } catch (e) {}
+                        } catch (e) { }
                       }}>Deseleccionar</button>
                       <button className="primary-cta" onClick={handleNext} disabled={!selected || creating || !isDatesValid()}>{creating ? 'Creando...' : 'Siguiente'}</button>
                     </div>
@@ -231,7 +231,7 @@ const OrdersCreateClient = () => {
                   <div style={{ color: '#666' }}>
                     No hay cliente seleccionado
 
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
                       <button className="link" onClick={goBack}>Cancelar</button>
                       <button className="primary-cta" onClick={handleNext} disabled={!selected || creating || !isDatesValid()}>{creating ? 'Creando...' : 'Siguiente'}</button>
                     </div>

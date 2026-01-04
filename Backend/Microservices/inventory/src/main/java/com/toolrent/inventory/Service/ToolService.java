@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +89,7 @@ public class ToolService {
             inv.setStockTool(0);
 
             inventoryRepository.save(inv);
-            i+=1;
+            i += 1;
         }
 
         if (amounts != null) {
@@ -114,6 +116,9 @@ public class ToolService {
         }
         if (toolUpdate.getCategoryId() != null) {
             tool.setCategoryId(toolUpdate.getCategoryId());
+        }
+        if (toolUpdate.getImageUrl() != null && !toolUpdate.getImageUrl().isBlank()) {
+            tool.setImageUrl(toolUpdate.getImageUrl());
         }
 
         Tool savedTool = toolRepository.save(tool);
@@ -167,7 +172,45 @@ public class ToolService {
                 tool.getId(),
                 tool.getToolName(),
                 categoryName,
-                amounts
-        );
+                amounts,
+                tool.getImageUrl());
+    }
+
+    public Map<String, String> uploadImage(org.springframework.web.multipart.MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new RuntimeException("No se proporcionó ningún archivo");
+        }
+
+        String imagesDir = System.getenv("IMAGES_PATH") != null
+                ? System.getenv("IMAGES_PATH").replace("file:", "")
+                : "images/";
+
+        // Ensure directory exists
+        java.nio.file.Path uploadPath = java.nio.file.Paths.get(imagesDir);
+        if (!java.nio.file.Files.exists(uploadPath)) {
+            java.nio.file.Files.createDirectories(uploadPath);
+        }
+
+        // Generate unique filename
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String baseName = originalFilename != null ? originalFilename.replace(extension, "") : "image";
+        String filename = timestamp + "_" + baseName + extension;
+
+        // Save file
+        java.nio.file.Path filePath = uploadPath.resolve(filename);
+        java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+        // Return response
+        Map<String, String> response = new java.util.HashMap<>();
+        response.put("filename", filename);
+        response.put("url", "/images/" + filename);
+
+        return response;
     }
 }

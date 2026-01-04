@@ -5,7 +5,7 @@ import ClientSearch from '../components/Clients/ClientSearch';
 
 const ReturnsClients = () => {
   const [selected, setSelected] = useState(null);
-  
+
 
   const handleNext = () => {
     if (!selected || !selected.id) {
@@ -15,12 +15,14 @@ const ReturnsClients = () => {
     try {
       sessionStorage.setItem('return_selected_client', JSON.stringify(selected));
     } catch (e) { /* ignore */ }
-    window.history.pushState({}, '', `/admin/returns/client/${selected.id}`);
+    // Use userId if available (preferred for backend lookups), fallback to id
+    const targetId = selected.userId || selected.id;
+    window.history.pushState({}, '', `/admin/returns/client/${targetId}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const handleCancel = () => {
-    try { sessionStorage.removeItem('return_selected_client'); } catch (e) {}
+    try { sessionStorage.removeItem('return_selected_client'); } catch (e) { }
     window.history.pushState({}, '', '/');
     window.dispatchEvent(new PopStateEvent('popstate'));
   };

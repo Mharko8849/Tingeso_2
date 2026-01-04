@@ -56,7 +56,7 @@ const LoanSummaryReadOnly = () => {
       const user = getUser();
       const employeeId = user ? user.id : null;
       if (!employeeId) throw new Error("No se pudo identificar al empleado");
-      
+
       await api.post(`/loan-tools/pay/${loan.id}`, null, { params: { employeeId } });
       setSuccess('El pedido ha sido finalizado manualmente.');
       // refrescar datos del préstamo para reflejar el nuevo estado
@@ -93,9 +93,9 @@ const LoanSummaryReadOnly = () => {
                   <section style={{ flex: '0 0 320px', background: '#fff', padding: 12, borderRadius: 8, border: '1px solid #e6e6e6' }}>
                     <h4>Cliente</h4>
                     <div style={{ marginTop: 8 }}>
-                      <div style={{ fontWeight: 800 }}>{loan.idUser ? (loan.idUser.name ? `${loan.idUser.name} ${loan.idUser.lastName || ''}` : (loan.idUser.username || loan.idUser.email)) : ''}</div>
-                      <div style={{ marginTop: 4,fontSize: 16, color: '#374151' }}>{loan.idUser?.username || loan.idUser?.email}</div>
-                      {loan.idUser?.rut && <div style={{ marginTop: 4, fontSize: 16 }}>RUT: {loan.idUser.rut}</div>}
+                      <div style={{ fontWeight: 800 }}>{loan.client ? (loan.client.name ? `${loan.client.name} ${loan.client.lastName || ''}` : (loan.client.username || loan.client.email)) : ''}</div>
+                      <div style={{ marginTop: 4, fontSize: 16, color: '#374151' }}>{loan.client?.username || loan.client?.email}</div>
+                      {loan.client?.rut && <div style={{ marginTop: 4, fontSize: 16 }}>RUT: {loan.client.rut}</div>}
                     </div>
                   </section>
 
@@ -134,10 +134,13 @@ const LoanSummaryReadOnly = () => {
                       <div>
                         <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {items.map(it => {
-                            const name = it.idTool?.name || it.idTool?.toolName || 'Herramienta';
-                            const image = it.idTool?.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80';
+                            // Backend returns LoanToolFull with 'tool' field (ToolFull)
+                            const t = it.tool || it.idTool || {};
+                            const name = t.toolName || t.name || 'Herramienta';
+                            const image = t.imageUrl ? `/images/${t.imageUrl}` : (t.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80');
                             const activity = it.toolActivity || '-';
-                            const price = Number(it.idTool?.priceRent || it.idTool?.price || 0);
+                            // Price is in amounts.priceRent
+                            const price = Number(t.amounts?.priceRent || t.priceRent || t.price || 0);
                             const qty = Number(it.amount || it.quantity || 1);
                             const lineTotal = price * qty;
                             return (
@@ -157,7 +160,7 @@ const LoanSummaryReadOnly = () => {
                         </div>
 
                         <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div style={{ fontSize: 20, fontWeight: 800,color: '#334155' }}>Total</div>
+                          <div style={{ fontSize: 20, fontWeight: 800, color: '#334155' }}>Total</div>
                           <div style={{ fontSize: 20, fontWeight: 800 }}>${Number(total || 0).toLocaleString()}</div>
                         </div>
                       </div>

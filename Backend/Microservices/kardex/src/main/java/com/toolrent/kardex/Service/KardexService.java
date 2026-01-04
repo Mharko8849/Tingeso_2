@@ -34,7 +34,8 @@ public class KardexService {
         return kardexRepository.save(Kardex);
     }
 
-    public Kardex createKardex(Long toolId, String type, Date actualDate, int cant, Integer cost, Long userId, Long employeeId) {
+    public Kardex createKardex(Long toolId, String type, Date actualDate, int cant, Integer cost, Long userId,
+            Long employeeId) {
         Kardex kardex = new Kardex();
 
         if (cost != null) {
@@ -99,7 +100,8 @@ public class KardexService {
                 .collect(Collectors.toList());
     }
 
-    public List<KardexFull> filterKardex(Long idTool, String type, Date initDate, Date finalDate, Long idUser, Long idEmployee) {
+    public List<KardexFull> filterKardex(Long idTool, String type, Date initDate, Date finalDate, Long idUser,
+            Long idEmployee) {
         List<Kardex> kardexList = kardexRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
         if (type != null && !type.isBlank()) {
@@ -154,8 +156,7 @@ public class KardexService {
                 .filter(k -> k.getType() != null && "PRESTAMO".equalsIgnoreCase(k.getType()))
                 .collect(Collectors.groupingBy(
                         Kardex::getToolId,
-                        Collectors.summingInt(Kardex::getCant)
-                ));
+                        Collectors.summingInt(Kardex::getCant)));
 
         return generateReport(toolCountMap);
     }
@@ -174,8 +175,7 @@ public class KardexService {
                 .filter(k -> k.getType() != null && "PRESTAMO".equalsIgnoreCase(k.getType()))
                 .collect(Collectors.groupingBy(
                         Kardex::getToolId,
-                        Collectors.summingInt(Kardex::getCant)
-                ));
+                        Collectors.summingInt(Kardex::getCant)));
 
         return generateReport(toolCountMap);
     }
@@ -196,7 +196,7 @@ public class KardexService {
             map.put("tool", tool);
             map.put("totalLoans", count);
             fullList.add(map);
-            i+=1;
+            i += 1;
         }
 
         fullList.sort((a, b) -> ((Integer) b.get("totalLoans")).compareTo((Integer) a.get("totalLoans")));
@@ -205,7 +205,7 @@ public class KardexService {
         i = 0;
         while (i < fullList.size() && i < 10) {
             result.add(fullList.get(i));
-            i+=1;
+            i += 1;
         }
 
         return result;
@@ -225,7 +225,7 @@ public class KardexService {
             System.err.println("Error conectando con Inventory-Service: " + e.getMessage());
         }
 
-        if (kardex.getUserId() != null){
+        if (kardex.getUserId() != null) {
             try {
                 String url_client = userServiceUrl + "/id/" + kardex.getUserId();
                 clientUser = restTemplate.getForObject(url_client, User.class);
@@ -249,7 +249,6 @@ public class KardexService {
                 kardex.getCant(),
                 kardex.getCost(),
                 clientUser,
-                employeeUser
-        );
+                employeeUser);
     }
 }

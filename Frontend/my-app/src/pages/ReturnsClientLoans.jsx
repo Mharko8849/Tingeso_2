@@ -19,7 +19,7 @@ const ReturnsClientLoans = () => {
     api.get(`/loans/filter?userId=${clientId}`)
       .then(res => {
         setLoans(res.data || []);
-        if (res.data && res.data.length > 0) setClient(res.data[0].idUser);
+        if (res.data && res.data.length > 0) setClient(res.data[0].client);
       })
       .catch(() => setLoans([]))
       .finally(() => setLoading(false));

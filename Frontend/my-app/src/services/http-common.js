@@ -14,7 +14,7 @@ api.interceptors.request.use(
     // — if we attach an expired token the backend will immediately return 401.
     const url = config.url || '';
     const isAuthEndpoint = url.includes('/users/login') || url.includes('/users/register');
-    const isPublicEndpoint = url.includes('/kardex/ranking') || url.includes('/images/');
+    const isPublicEndpoint = url.includes('/kardex/ranking') || url.includes('/images/') || url.includes('/category');
 
     if (isAuthEndpoint || isPublicEndpoint) {
       return config;

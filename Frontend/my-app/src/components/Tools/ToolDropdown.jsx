@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TOOL_CATEGORIES } from "../../constants/toolCategories";
+import api from "../../services/http-common";
 import "./ToolDropdown.css";
 
 /**
@@ -9,7 +9,24 @@ import "./ToolDropdown.css";
  */
 const ToolDropdown = () => {
   const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/category");
+        // Assuming backend returns list of objects { id, name }
+        setCategories(response.data.map(c => c.name));
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    if (open && categories.length === 0) {
+      fetchCategories();
+    }
+  }, [open]);
 
   const toggleMenu = () => setOpen(!open);
   const closeMenu = () => setOpen(false);
@@ -41,10 +58,10 @@ const ToolDropdown = () => {
                 <a href="#" onClick={(e) => { e.preventDefault(); handleCategoryClick(''); }} className="category-item all-categories">
                   Todas
                 </a>
-                {TOOL_CATEGORIES.map((cat) => (
-                  <a 
-                    key={cat} 
-                    href="#" 
+                {categories.map((cat) => (
+                  <a
+                    key={cat}
+                    href="#"
                     onClick={(e) => { e.preventDefault(); handleCategoryClick(cat); }}
                     className="category-item"
                   >

@@ -13,4 +13,5 @@ public class ToolFull {
     private String toolName;
     private String categoryName;
     private Amounts amounts;
+    private String imageUrl;
 }

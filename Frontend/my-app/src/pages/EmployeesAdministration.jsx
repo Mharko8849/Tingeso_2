@@ -94,19 +94,14 @@ const EmployeesAdministration = () => {
   const resolveAdminId = async () => {
     let idAdmin = null;
     try {
-      const localToken = typeof window !== 'undefined' ? (localStorage.getItem('access_token') || localStorage.getItem('app_token')) : null;
-      const token = keycloak?.token || localToken;
-
-      if (token) {
-        try {
-          const meResp = await fetch('/users/me', { headers: { Authorization: `Bearer ${token}` } });
-          if (meResp.ok) {
-            const me = await meResp.json();
-            idAdmin = me.id;
-          }
-        } catch (err) {
-          console.warn('Failed to call /users/me', err);
+      // Use api client which handles tokens automatically
+      try {
+        const meResp = await api.get('/users/me');
+        if (meResp.data) {
+          idAdmin = meResp.data.id;
         }
+      } catch (err) {
+        console.warn('Failed to call /users/me', err);
       }
 
       if (!idAdmin) {
@@ -277,14 +272,14 @@ const EmployeesAdministration = () => {
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Refrescar
               </button>
               <ReportEmployees rows={employees} />
               <button onClick={addEmployee} className="primary-cta" type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff"/></svg>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff" /></svg>
                 <span style={{ marginLeft: 8 }}>Añadir Empleado</span>
               </button>
             </div>

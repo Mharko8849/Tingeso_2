@@ -30,7 +30,7 @@ const InventoryPage = ({ category = null }) => {
   // determine roles to show add button only to admins
   const { keycloak, initialized } = useKeycloak();
   const user = getUser();
-  
+
   let rolesRaw = [];
   if (initialized && keycloak.authenticated && keycloak.tokenParsed && keycloak.tokenParsed.realm_access) {
     rolesRaw = keycloak.tokenParsed.realm_access.roles || [];
@@ -47,39 +47,43 @@ const InventoryPage = ({ category = null }) => {
       // Request inventory from backend, letting backend apply category,
       // price and sort filters. Backend will perform case-insensitive
       // substring match on category when provided.
-        // Use axios instance so interceptor adds Authorization header automatically
-  const qs = {};
-  if (category) qs.category = category;
-  if (appliedFilters?.minPrice) qs.minPrice = appliedFilters.minPrice;
-  if (appliedFilters?.maxPrice) qs.maxPrice = appliedFilters.maxPrice;
-  if (appliedFilters?.asc) qs.asc = true;
-  if (appliedFilters?.desc) qs.desc = true;
-  if (appliedFilters?.recent) qs.recent = true;
-  // if (appliedFilters?.popular) qs.popular = true; // Removed as backend doesn't support it
+      // Use axios instance so interceptor adds Authorization header automatically
+      const qs = {};
+      if (category) qs.category = category;
+      if (appliedFilters?.minPrice) qs.minPrice = appliedFilters.minPrice;
+      if (appliedFilters?.maxPrice) qs.maxPrice = appliedFilters.maxPrice;
+      if (appliedFilters?.asc) qs.asc = true;
+      if (appliedFilters?.desc) qs.desc = true;
+      if (appliedFilters?.recent) qs.recent = true;
+      // if (appliedFilters?.popular) qs.popular = true; // Removed as backend doesn't support it
 
-  const resp = await api.get('/inventory/filter', { params: qs });
-  const inv = resp.data;
-  // Debug: log server response so we can inspect its shape in the browser console
-  console.debug('[InventoryPage] /inventory/filter response:', inv);
+      const resp = await api.get('/inventory/filter', { params: qs });
+      const inv = resp.data;
+      // Debug: log server response so we can inspect its shape in the browser console
+      console.debug('[InventoryPage] /inventory/filter response:', inv);
 
       // Group inventory entries by tool id and compute available stock
       const map = new Map();
       (inv || []).forEach((entry) => {
-        const t = entry.idTool || {};
+        // Backend returns InventoryFull which contains ToolFull in 'toolFull' field
+        const t = entry.toolFull || entry.idTool || {};
         const tid = t.id;
         if (!map.has(tid)) {
           map.set(tid, {
             id: tid,
             name: t.toolName || t.name || '—',
-            price: t.priceRent || t.price || 0,
-            category: t.category || category,
+            // Price is nested in amounts
+            price: t.amounts?.priceRent || t.price || 0,
+            // Category name is in categoryName
+            category: t.categoryName || t.category || category,
             image: t.imageUrl ? `/images/${t.imageUrl}` : 'http://localhost:8090/images/NoImage.png',
             stock: 0,
           });
         }
         const item = map.get(tid);
-        // sum only available stock entries
-        if (entry.toolState === 'DISPONIBLE') {
+        // sum only available stock entries. Backend uses toolStateName
+        const state = entry.toolStateName || entry.toolState;
+        if (state === 'DISPONIBLE') {
           item.stock = (item.stock || 0) + (entry.stockTool || 0);
         }
       });
@@ -96,7 +100,7 @@ const InventoryPage = ({ category = null }) => {
           // Fetch ranking data to know which tools are popular
           const rankingResp = await api.get("/kardex/ranking");
           const rankingList = rankingResp.data; // List of { tool: {...}, totalLoans: X }
-          
+
           // Create a map of toolId -> totalLoans for quick lookup
           const popularityMap = new Map();
           rankingList.forEach(item => {

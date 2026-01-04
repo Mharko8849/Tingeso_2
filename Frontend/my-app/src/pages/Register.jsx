@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from '../services/http-common';
 import NavBar from '../components/Layout/NavBar';
 import './forms.css';
 import UserRegisterForm from '../components/Register/UserRegisterForm';
@@ -19,23 +20,19 @@ const Register = () => {
       // stateClient and rol are set server-side by UserService.createClient
     };
 
-    const res = await fetch('/users/register/client', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
+    try {
+      await api.post('/users/register/client', body);
+      // success: show success alert and go back to the previous page after a short delay
+      setAlert({ severity: 'success', message: 'Registro exitoso. Volviendo a la página anterior...' });
+      setTimeout(() => {
+        try { window.history.back(); } catch (e) { window.location.href = '/'; }
+      }, 1200);
+    } catch (e) {
+      console.error('Registration failed', e);
+      const err = e.response?.data || e.message || 'Registro falló';
       // show error alert
-      setAlert({ severity: 'error', message: err || 'Registro falló' });
-      throw new Error(err || 'Registro falló');
+      setAlert({ severity: 'error', message: typeof err === 'string' ? err : JSON.stringify(err) });
     }
-    // success: show success alert and go back to the previous page after a short delay
-    setAlert({ severity: 'success', message: 'Registro exitoso. Volviendo a la página anterior...' });
-    setTimeout(() => {
-      try { window.history.back(); } catch (e) { window.location.href = '/'; }
-    }, 1200);
   };
 
   return (

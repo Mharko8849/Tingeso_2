@@ -37,7 +37,9 @@ public class UserController {
     @GetMapping("/clients")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN', 'EMPLOYEE')")
     public ResponseEntity<List<User>> getAllClients() {
-        return ResponseEntity.ok(userService.getAllClients());
+        List<User> clients = userService.getAllClients();
+        System.out.println("Returning " + clients.size() + " clients");
+        return ResponseEntity.ok(clients);
     }
 
     @GetMapping("/filter")

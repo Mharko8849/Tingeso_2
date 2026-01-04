@@ -43,8 +43,21 @@ public class ToolController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     public ResponseEntity<Tool> updateTool(@PathVariable Long id,
-                                           @RequestBody ToolInput request,
-                                           @RequestParam Long userId) {
+            @RequestBody ToolInput request,
+            @RequestParam Long userId) {
         return ResponseEntity.ok(toolService.updateTool(id, request.getTool(), request.getAmounts(), userId));
+    }
+
+    @PostMapping("/upload-image")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
+    public ResponseEntity<java.util.Map<String, String>> uploadImage(
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        try {
+            return ResponseEntity.ok(toolService.uploadImage(file));
+        } catch (Exception e) {
+            java.util.Map<String, String> error = new java.util.HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 }

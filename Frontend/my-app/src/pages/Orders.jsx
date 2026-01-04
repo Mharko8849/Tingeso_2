@@ -7,6 +7,7 @@ import CategoryListing from '../components/Categories/CategoryListing';
 import ClientSearch from '../components/Clients/ClientSearch';
 import OrderItemsDrawer from '../components/Orders/OrderItemsDrawer';
 import api from '../services/http-common';
+import { getUser } from '../services/auth';
 import TransitionAlert from '../components/Alerts/TransitionAlert';
 
 const Orders = () => {
@@ -18,6 +19,9 @@ const Orders = () => {
   const [items, setItems] = useState([]);
   const [creating, setCreating] = useState(false);
   const [alert, setAlert] = useState(null);
+
+  const [initDate, setInitDate] = useState(new Date().toISOString().split('T')[0]);
+  const [returnDate, setReturnDate] = useState(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
 
   useEffect(() => { fetchTools(filters); }, []);
 
@@ -31,19 +35,22 @@ const Orders = () => {
       const inv = resp.data || [];
       const map = new Map();
       (inv || []).forEach((entry) => {
-        const t = entry.idTool || {};
+        // Backend returns InventoryFull which contains ToolFull in 'toolFull' field
+        const t = entry.toolFull || entry.idTool || {};
         const tid = t.id;
         if (!map.has(tid)) {
           map.set(tid, {
             id: tid,
             name: t.toolName || t.name || '—',
-            price: t.priceRent || t.price || 0,
-            image: t.image,
+            price: t.amounts?.priceRent ?? (typeof t.priceRent === 'number' ? t.priceRent : (typeof t.price === 'number' ? t.price : 0)),
+            image: t.imageUrl ? `/images/${t.imageUrl}` : (t.image || '/images/NoImage.png'),
             stock: 0,
           });
         }
         const item = map.get(tid);
-        if (entry.toolState === 'DISPONIBLE') {
+        // Backend uses toolStateName
+        const state = entry.toolStateName || entry.toolState;
+        if (state === 'DISPONIBLE') {
           item.stock = (item.stock || 0) + (entry.stockTool || 0);
         }
       });
@@ -75,6 +82,7 @@ const Orders = () => {
   const createOrder = async () => {
     if (!selectedClient) { setAlert({ severity: 'error', message: 'Selecciona un cliente' }); return; }
     if (!items || items.length === 0) { setAlert({ severity: 'error', message: 'Agrega al menos una herramienta' }); return; }
+    if (!initDate || !returnDate) { setAlert({ severity: 'error', message: 'Selecciona las fechas de inicio y devolución' }); return; }
 
     // validate against stock
     for (const it of items) {
@@ -84,17 +92,38 @@ const Orders = () => {
       }
     }
 
-    const payload = { clientId: selectedClient.id, items: items.map(i => ({ toolId: i.id, quantity: i.qty })) };
     setCreating(true);
     try {
-      const resp = await api.post('/orders', payload);
+      const user = getUser();
+      const employeeId = user ? user.id : null;
+      if (!employeeId) throw new Error("No se pudo identificar al empleado");
+
+      const userId = selectedClient.userId || selectedClient.id;
+
+      // 1. Create Loan
+      const loanResp = await api.post(`/loans/create/${userId}`, null, {
+        params: {
+          employeeId,
+          initDate,
+          returnDate
+        }
+      });
+      const loan = loanResp.data;
+      if (!loan || !loan.id) throw new Error("Error al crear el préstamo");
+
+      // 2. Add tools to loan
+      // We do this sequentially to avoid race conditions or overwhelming the server, though parallel could work too.
+      for (const item of items) {
+        await api.post(`/loan-tools/add/${loan.id}/${item.id}`);
+      }
+
       setAlert({ severity: 'success', message: 'Pedido creado correctamente' });
       // reset
       setItems([]);
       setSelectedClient(null);
     } catch (e) {
       console.warn('createOrder failed', e);
-      setAlert({ severity: 'error', message: 'No se pudo crear el pedido (simulado)' });
+      setAlert({ severity: 'error', message: 'No se pudo crear el pedido. Intente nuevamente.' });
     } finally { setCreating(false); }
   };
 
@@ -106,6 +135,27 @@ const Orders = () => {
         <div className="max-w-6xl mx-auto">
           <h2 style={{ margin: '0 0 12px 0', fontSize: '1.5rem', fontWeight: 700 }}>Administración — Pedidos</h2>
           <div style={{ marginTop: 6 }}>{selectedClient ? `Cliente seleccionado: ${selectedClient.username} — ${selectedClient.name || ''}` : 'Cliente no seleccionado'}</div>
+
+          <div style={{ marginTop: 12, display: 'flex', gap: 16, alignItems: 'center' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Fecha Inicio</label>
+              <input
+                type="date"
+                value={initDate}
+                onChange={(e) => setInitDate(e.target.value)}
+                style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #d1d5db' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Fecha Devolución</label>
+              <input
+                type="date"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #d1d5db' }}
+              />
+            </div>
+          </div>
 
           <div style={{ marginTop: 12 }}>
             {loadingTools ? <div>Cargando herramientas...</div> : (

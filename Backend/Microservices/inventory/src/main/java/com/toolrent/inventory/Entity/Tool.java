@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name="tools")
+@Table(name = "tools")
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -20,6 +20,8 @@ public class Tool {
 
     private String toolName;
 
-    @Column(name="category_id", nullable = false)
+    @Column(name = "category_id", nullable = false)
     private Long categoryId;
+
+    private String imageUrl;
 }

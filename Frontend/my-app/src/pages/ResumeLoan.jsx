@@ -12,18 +12,18 @@ const ResumeLoan = () => {
   const [alert, setAlert] = useState(null);
   const [dateError, setDateError] = useState('');
   const [total, setTotal] = useState(0);
-  
-    const isDatesValid = () => {
-        if (!initDate || !returnDate) return false;
-        try {
-          const dInit = new Date(initDate);
-          const dRet = new Date(returnDate);
-          const minDiff = 24 * 60 * 60 * 1000;
-          return (dRet.getTime() - dInit.getTime()) >= minDiff;
-        } catch (e) {
-          return false;
-        }
-    };
+
+  const isDatesValid = () => {
+    if (!initDate || !returnDate) return false;
+    try {
+      const dInit = new Date(initDate);
+      const dRet = new Date(returnDate);
+      const minDiff = 24 * 60 * 60 * 1000;
+      return (dRet.getTime() - dInit.getTime()) >= minDiff;
+    } catch (e) {
+      return false;
+    }
+  };
 
   // derived validation flag used to enable/disable the Confirm button
   const datesValid = isDatesValid();
@@ -42,8 +42,8 @@ const ResumeLoan = () => {
               const r = await api.get(`/loans/${loanId}`);
               const loan = r.data;
               if (loan) {
-                if (loan.initDate) setInitDate(loan.initDate.slice(0,10));
-                if (loan.returnDate) setReturnDate(loan.returnDate.slice(0,10));
+                if (loan.initDate) setInitDate(loan.initDate.slice(0, 10));
+                if (loan.returnDate) setReturnDate(loan.returnDate.slice(0, 10));
                 // fetch total from backend to mirror read-only summary behaviour
                 try {
                   const t = await api.get(`/loan-tools/total/${loanId}`);
@@ -59,10 +59,10 @@ const ResumeLoan = () => {
           }
           // sensible defaults for dates if loan fetch failed
           const today = new Date();
-          const iso = d => d.toISOString().slice(0,10);
+          const iso = d => d.toISOString().slice(0, 10);
           const init = iso(today);
           setInitDate(init);
-          const plus1 = new Date(today.getTime() + 1*24*60*60*1000);
+          const plus1 = new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000);
           setReturnDate(iso(plus1));
         })();
       }
@@ -74,7 +74,7 @@ const ResumeLoan = () => {
   const calcTotal = () => {
     if (total && Number(total) > 0) return Number(total);
     if (!resume || !Array.isArray(resume.items)) return 0;
-    return resume.items.reduce((s,it) => s + (Number(it.price || 0) * Number(it.qty || 1)), 0);
+    return resume.items.reduce((s, it) => s + (Number(it.price || 0) * Number(it.qty || 1)), 0);
   };
 
   const confirmAndCreate = async () => {
@@ -82,7 +82,7 @@ const ResumeLoan = () => {
       setAlert({ severity: 'error', message: 'No hay datos del pedido.' });
       return;
     }
-    if (!initDate || !returnDate) { setAlert({ severity: 'error', message: 'Selecciona las fechas.'}); return; }
+    if (!initDate || !returnDate) { setAlert({ severity: 'error', message: 'Selecciona las fechas.' }); return; }
 
     // validate dates: initDate must be today and returnDate at least one day after initDate
     const dInit = new Date(initDate);
@@ -90,19 +90,19 @@ const ResumeLoan = () => {
     const diffMs = dReturn.getTime() - dInit.getTime();
     const minDiff = 24 * 60 * 60 * 1000; // 1 day
     if (diffMs < minDiff) {
-      setAlert({ severity: 'error', message: 'La fecha de devolución debe ser al menos 1 día después de la fecha inicial.'});
+      setAlert({ severity: 'error', message: 'La fecha de devolución debe ser al menos 1 día después de la fecha inicial.' });
       return;
     }
-    
-      // final validation: ensure dates are valid before sending
-      if (!isDatesValid()) {
-        setAlert({ severity: 'error', message: 'Fechas inválidas. La fecha inicial debe ser hoy y la devolución al menos 1 día después.'});
-        return;
-      }
+
+    // final validation: ensure dates are valid before sending
+    if (!isDatesValid()) {
+      setAlert({ severity: 'error', message: 'Fechas inválidas. La fecha inicial debe ser hoy y la devolución al menos 1 día después.' });
+      return;
+    }
 
     // Pre-check: verify the client does not already have active loans for these tools
     try {
-      const clientId = resume.client.id;
+      const clientId = resume.client.userId || resume.client.id;
       const loansResp = await api.get(`/loans/filter`, { params: { userId: clientId } });
       const loans = loansResp.data || [];
       const conflicts = [];
@@ -177,17 +177,17 @@ const ResumeLoan = () => {
         return;
       }
 
-  // call batch give endpoint to mark all as PRESTADA in one transaction
-  // backend exposes /loan-tools/give/all?employeeId={idUser}
-  await api.post(`/loan-tools/give/all`, loanXIds, { params: { employeeId } });
+      // call batch give endpoint to mark all as PRESTADA in one transaction
+      // backend exposes /loan-tools/give/all?employeeId={idUser}
+      await api.post(`/loan-tools/give/all`, loanXIds, { params: { employeeId } });
 
       // success: clear resume and selected client and navigate to orders list
       sessionStorage.removeItem('order_resume');
       sessionStorage.removeItem('order_selected_client');
       sessionStorage.removeItem('order_loan_id');
-  setAlert({ severity: 'success', message: 'Pedido creado y herramientas prestadas correctamente' });
-  // give user time to read the success message before redirecting
-  setTimeout(() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); }, 3000);
+      setAlert({ severity: 'success', message: 'Pedido creado y herramientas prestadas correctamente' });
+      // give user time to read the success message before redirecting
+      setTimeout(() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); }, 3000);
     } catch (e) {
       console.error('Error creating/processing order', e?.response?.data || e.message || e);
       const backendMsg = e?.response?.data && (e.response.data.message || e.response.data.error || e.response.data);
@@ -262,8 +262,8 @@ const ResumeLoan = () => {
               <div style={{ marginTop: 16 }}>
                 <label>Fecha inicio: <input type="date" value={initDate} min={initDate} disabled /></label>
                 <label style={{ marginLeft: 12 }}>Fecha retorno: <input type="date" value={returnDate} min={(() => {
-                    try { const d = new Date(initDate); d.setDate(d.getDate() + 1); return d.toISOString().slice(0,10); } catch(e) { return '' }
-                  })()} disabled /></label>
+                  try { const d = new Date(initDate); d.setDate(d.getDate() + 1); return d.toISOString().slice(0, 10); } catch (e) { return '' }
+                })()} disabled /></label>
                 {dateError && <div style={{ color: '#b91c1c', marginTop: 6 }}>{dateError}</div>}
               </div>
 

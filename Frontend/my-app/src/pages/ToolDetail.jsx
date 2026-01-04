@@ -33,7 +33,7 @@ const ToolDetail = (props) => {
   } else if (user && user.realm_access && Array.isArray(user.realm_access.roles)) {
     rolesRaw = user.realm_access.roles;
   }
-  
+
   const roles = rolesRaw.map((r) => String(r).toUpperCase());
   const isInternalUser =
     roles.includes('EMPLOYEE') || roles.includes('ADMIN') || roles.includes('SUPERADMIN');
@@ -47,7 +47,8 @@ const ToolDetail = (props) => {
       // There is no GET /tools/{id}. Use inventory filter to fetch a tool by id.
       const res = await api.get('/inventory/filter', { params: { idTool: id } });
       const arr = res.data || [];
-      const t = (arr[0] && arr[0].idTool) || {};
+      // Backend returns InventoryFull. The tool details are in 'toolFull' (or fallback to 'idTool' for legacy)
+      const t = (arr[0] && (arr[0].toolFull || arr[0].idTool)) || {};
 
       if (!t || !t.id) {
         setTool(null);
@@ -58,7 +59,8 @@ const ToolDetail = (props) => {
       // Compute stock by state from inventory entries of this tool
       const summary = { DISPONIBLE: 0, PRESTADA: 0, EN_REPARACION: 0, DADA_DE_BAJA: 0 };
       for (const e of arr) {
-        const st = String(e.toolState || '').toUpperCase();
+        // Backend uses toolStateName
+        const st = String(e.toolStateName || e.toolState || '').toUpperCase();
         const qty = Number(e.stockTool) || 0;
         if (summary.hasOwnProperty(st)) summary[st] += qty;
       }
@@ -66,13 +68,16 @@ const ToolDetail = (props) => {
       const mapped = {
         id: t.id,
         name: t.toolName ?? t.name ?? '',
-        price: typeof t.priceRent === 'number' ? t.priceRent : (typeof t.price === 'number' ? t.price : null),
-        category: t.category ?? '',
+        // Price is nested in amounts
+        price: t.amounts?.priceRent ?? (typeof t.priceRent === 'number' ? t.priceRent : (typeof t.price === 'number' ? t.price : null)),
+        // Category name is in categoryName
+        category: t.categoryName ?? t.category ?? '',
         description: '',
         specs: [],
         image: t.imageUrl ? `/images/${t.imageUrl}` : '',
-        repoCost: typeof t.repoCost === 'number' ? t.repoCost : null,
-        priceFineAtDate: typeof t.priceFineAtDate === 'number' ? t.priceFineAtDate : null,
+        // Repo cost and fine are in amounts
+        repoCost: t.amounts?.priceRepo ?? (typeof t.repoCost === 'number' ? t.repoCost : null),
+        priceFineAtDate: t.amounts?.priceFine ?? (typeof t.priceFineAtDate === 'number' ? t.priceFineAtDate : null),
       };
 
       setTool(mapped);
@@ -106,19 +111,10 @@ const ToolDetail = (props) => {
     const mapped = {
       ...tool,
       name: updated.toolName ?? updated.name ?? tool?.name,
-      price:
-        typeof updated.priceRent === 'number'
-          ? updated.priceRent
-          : (typeof updated.price === 'number' ? updated.price : tool?.price),
-      category: updated.category ?? tool?.category,
-      repoCost:
-        typeof updated.repoCost === 'number'
-          ? updated.repoCost
-          : tool?.repoCost,
-      priceFineAtDate:
-        typeof updated.priceFineAtDate === 'number'
-          ? updated.priceFineAtDate
-          : tool?.priceFineAtDate,
+      price: updated.amounts?.priceRent ?? (typeof updated.priceRent === 'number' ? updated.priceRent : (typeof updated.price === 'number' ? updated.price : tool?.price)),
+      category: updated.categoryName ?? updated.category ?? tool?.category,
+      repoCost: updated.amounts?.priceRepo ?? (typeof updated.repoCost === 'number' ? updated.repoCost : tool?.repoCost),
+      priceFineAtDate: updated.amounts?.priceFine ?? (typeof updated.priceFineAtDate === 'number' ? updated.priceFineAtDate : tool?.priceFineAtDate),
       image: updated.imageUrl ? `/images/${updated.imageUrl}` : tool?.image,
     };
     setTool(mapped);
@@ -231,12 +227,12 @@ const ToolDetail = (props) => {
                   {canEdit && (
                     <>
                       <button onClick={() => setShowAddStock(true)} type="button" className="td-quote inline-flex items-center gap-5 px-4 py-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                         <span>Añadir Stock</span>
                       </button>
 
                       <button onClick={() => setShowEditTool(true)} type="button" className="td-quote inline-flex items-center gap-5 px-4 py-2">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#fff"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#fff"/></svg>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#fff" /><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#fff" /></svg>
                         <span>Editar Producto</span>
                       </button>
                     </>

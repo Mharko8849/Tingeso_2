@@ -33,7 +33,16 @@ const KardexPage = () => {
       if (toVal) params.finalDate = toVal;
 
       const resp = await api.get('/kardex/filter', { params });
-      setMovements(Array.isArray(resp.data) ? resp.data : resp.data?.movements || []);
+      const rawData = Array.isArray(resp.data) ? resp.data : resp.data?.movements || [];
+
+      // Map backend fields to frontend expectations
+      const mappedData = rawData.map(m => ({
+        ...m,
+        user: m.client || m.user || m.idUser, // Backend returns 'client', frontend uses 'user'
+        // Ensure other fields are preserved or mapped if needed
+      }));
+
+      setMovements(mappedData);
     } catch (err) {
       console.error('Error fetching /kardex/filter', err);
       setMovements([]);
@@ -196,8 +205,8 @@ const KardexPage = () => {
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   Refrescar
                 </button>
@@ -257,10 +266,10 @@ const KardexPage = () => {
               </select>
             </div>
 
-            <ReportRanking 
-              dateFrom={dateFrom} 
-              dateTo={dateTo} 
-              label="Generar Reporte Ranking (CSV)" 
+            <ReportRanking
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              label="Generar Reporte Ranking (CSV)"
               className="secondary-cta"
             />
           </div>
@@ -281,15 +290,15 @@ const KardexPage = () => {
               />
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                    <tr style={{ textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>
-                      <th style={{ padding: '8px 12px' }}>Fecha</th>
-                      <th style={{ padding: '8px 12px' }}>Empleado (ID)</th>
-                      <th style={{ padding: '8px 12px' }}>Herramienta (ID - Nombre)</th>
-                      <th style={{ padding: '8px 12px' }}>Usuario</th>
-                      <th style={{ padding: '8px 12px' }}>Tipo de Movimiento</th>
-                      <th style={{ padding: '8px 12px' }}>Cantidad</th>
-                      <th style={{ padding: '8px 12px' }}>Monto</th>
-                    </tr>
+                  <tr style={{ textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>
+                    <th style={{ padding: '8px 12px' }}>Fecha</th>
+                    <th style={{ padding: '8px 12px' }}>Empleado (ID)</th>
+                    <th style={{ padding: '8px 12px' }}>Herramienta (ID - Nombre)</th>
+                    <th style={{ padding: '8px 12px' }}>Usuario</th>
+                    <th style={{ padding: '8px 12px' }}>Tipo de Movimiento</th>
+                    <th style={{ padding: '8px 12px' }}>Cantidad</th>
+                    <th style={{ padding: '8px 12px' }}>Monto</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (

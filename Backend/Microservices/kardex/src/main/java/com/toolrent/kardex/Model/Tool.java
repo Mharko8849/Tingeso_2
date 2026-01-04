@@ -10,5 +10,13 @@ import lombok.NoArgsConstructor;
 
 public class Tool {
     private Long id;
-    private String name;
+    private String toolName;
+    private String categoryName;
+    private Amounts amounts;
+    private String imageUrl;
+
+    // Getters for compatibility if needed, or just use public fields/lombok
+    public String getName() {
+        return toolName;
+    }
 }

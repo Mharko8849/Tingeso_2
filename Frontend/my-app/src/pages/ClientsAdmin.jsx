@@ -49,13 +49,19 @@ const ClientsAdmin = () => {
     try {
       const params = {};
       if (stateVal) params.state = stateVal;
-      const resp = await api.get('/users/filter', { params });
+
+      // Use /clients/filter if state is provided, otherwise /clients
+      const endpoint = stateVal ? '/clients/filter' : '/clients';
+      const resp = await api.get(endpoint, { params });
       const data = resp.data || [];
-      // keep only users whose role looks like CLIENT as a safeguard
-      let filtered = (data || []).filter((u) => {
-        const r = (u.rol || u.role || '').toString().toUpperCase();
-        return r === 'CLIENT' || r === 'CLIENTE';
-      });
+
+      // Map ClientFull objects to flat structure
+      let filtered = data.map(c => ({
+        ...c.user,          // username, name, email, rut, role, id (userId)
+        clientId: c.id,     // preserve client ID
+        loans: c.loans,
+        stateClient: c.stateClient
+      }));
 
       // apply client-side text filter by name, lastName, email or rut
       if (qVal) {
@@ -210,14 +216,14 @@ const ClientsAdmin = () => {
                   >
                     {/* reload icon */}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     Refrescar
                   </button>
                   <ReportClients rows={clients} />
                   <button onClick={addClient} className="primary-cta" type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff"/></svg>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="#fff" /></svg>
                     <span style={{ marginLeft: 8 }}>Añadir Cliente</span>
                   </button>
                 </div>
@@ -274,17 +280,17 @@ const ClientsAdmin = () => {
                     <col style={{ width: '8%' }} />
                   </colgroup>
                   <thead>
-                        <tr style={{ textAlign: 'left', borderBottom: '2px solid #ddd' }}>
-                          <th style={{ padding: 8 }}>ID</th>
-                          <th style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Username</th>
-                          <th style={{ padding: 8 }}>Nombre</th>
-                          <th style={{ padding: 8 }}>Apellido</th>
-                          <th style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Email</th>
-                          <th style={{ padding: 8 }}>RUT</th>
-                          <th style={{ padding: 8 }}>Pedidos</th>
-                          <th style={{ padding: 8 }}>Estado</th>
-                          <th style={{ padding: 8 }}>Rol</th>
-                        </tr>
+                    <tr style={{ textAlign: 'left', borderBottom: '2px solid #ddd' }}>
+                      <th style={{ padding: 8 }}>ID</th>
+                      <th style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Username</th>
+                      <th style={{ padding: 8 }}>Nombre</th>
+                      <th style={{ padding: 8 }}>Apellido</th>
+                      <th style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Email</th>
+                      <th style={{ padding: 8 }}>RUT</th>
+                      <th style={{ padding: 8 }}>Pedidos</th>
+                      <th style={{ padding: 8 }}>Estado</th>
+                      <th style={{ padding: 8 }}>Rol</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {pagedClients.map((u) => (

@@ -34,7 +34,7 @@ const Loans = () => {
     return await fetchFilteredWith({ status, q });
   };
 
-  
+
 
   const fetchFilteredWith = async ({ status: statusVal, q: qVal } = {}) => {
     setLoading(true);
@@ -92,7 +92,7 @@ const Loans = () => {
       const term = q.toLowerCase();
       data = data.filter((l) => {
         const idStr = String(l.id || '');
-        const clientName = l.idUser ? ((l.idUser.name ? `${l.idUser.name} ${l.idUser.lastName || ''}` : (l.idUser.username || l.idUser.email || ''))) : '';
+        const clientName = l.client ? ((l.client.name ? `${l.client.name} ${l.client.lastName || ''}` : (l.client.username || l.client.email || ''))) : '';
         return idStr.includes(term) || clientName.toLowerCase().includes(term);
       });
     }
@@ -150,8 +150,8 @@ const Loans = () => {
             >
               {/* simple reload icon (SVG) to match common refresh symbol */}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M21 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Refrescar
             </button>
@@ -197,7 +197,7 @@ const Loans = () => {
                       <div style={{ display: 'grid', gridTemplateColumns: '80px 1.2fr 1fr 1fr 1fr 160px 120px', alignItems: 'center', gap: 12, width: '100%' }}>
                         <div style={{ fontWeight: 800, fontSize: 16 }}>#{l.id}</div>
                         <div style={{ fontSize: 14, color: '#374151' }}>
-                          {l.idUser ? (l.idUser.name ? `${l.idUser.name} ${l.idUser.lastName || ''}` : (l.idUser.username || l.idUser.email)) : '—'}
+                          {l.client ? (l.client.name ? `${l.client.name} ${l.client.lastName || ''}` : (l.client.username || l.client.email)) : '—'}
                         </div>
                         <div style={{ fontSize: 14, color: '#374151' }}>{l.initDate}</div>
                         <div style={{ fontSize: 14, color: '#374151' }}>{l.returnDate}</div>

@@ -24,8 +24,15 @@ const OrderBuilder = ({ onClose, onCreated }) => {
     // fetch clients (admins can view all clients)
     const fetchClients = async () => {
       try {
-        const resp = await api.get('/users/clients');
-        setClients(resp.data || []);
+        const resp = await api.get('/clients');
+        const mappedClients = (resp.data || []).map(clientFull => ({
+          ...clientFull.user,
+          id: clientFull.id, // Use client ID
+          userId: clientFull.user.id,
+          loans: clientFull.loans,
+          stateClient: clientFull.stateClient
+        }));
+        setClients(mappedClients);
       } catch (e) {
         console.warn('Could not fetch clients', e);
         setClients([]);

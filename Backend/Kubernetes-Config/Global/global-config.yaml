@@ -12,6 +12,7 @@ data:
   URL_CONFIG: "http://config-server:8081"
 
   KEYCLOAK_URL: "http://192.168.39.130:31000"
+  KEYCLOAK_ISSUER_URL: "http://192.168.39.130:31000"
   KEYCLOAK_REALM: "ToolRent"
   KEYCLOAK_CLIENT_ID: "toolrent-backend"
   KEYCLOAK_CLIENT_SECRET: "dVXW9tfHmjPMNBSEGgWI6SpDZg06YctP"
