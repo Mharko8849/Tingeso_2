@@ -26,10 +26,20 @@ const ReportRanking = ({ rows = [], filename, dateFrom, dateTo, label = "Generar
             if (dateFrom) params.initDate = dateFrom;
             if (dateTo) params.finalDate = dateTo;
             
-            const resp = await api.get('/api/kardex/ranking/range', { params });
+            const resp = await api.post('/reports/generate/ranking', null, { params });
+            // Backend returns Report object with data field as JSON string
+            let rawData = [];
+            if (resp.data && resp.data.data) {
+                try {
+                    rawData = JSON.parse(resp.data.data);
+                } catch (e) {
+                    console.error("Error parsing report data", e);
+                }
+            }
+
             // Transform backend format to flat structure for CSV
             // Backend returns List<Map<String, Object>> where tool is an object
-            dataToProcess = resp.data.map(item => {
+            dataToProcess = rawData.map(item => {
                 const t = item.tool || {};
                 return {
                     toolName: t.toolName || t.name || '—',

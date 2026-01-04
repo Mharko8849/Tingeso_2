@@ -354,6 +354,12 @@ public class LoanToolService {
         return totalFine;
     }
 
+    public int getFinePreview(Long loanToolId, String state) {
+        LoanTool lxt = loanToolRepository.findById(loanToolId)
+                .orElseThrow(() -> new RuntimeException("Item no encontrado"));
+        return calculateFine(lxt, state);
+    }
+
     // Métodos auxiliares
 
     public int calculateFine(LoanTool lxt, String state) {

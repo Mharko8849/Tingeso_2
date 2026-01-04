@@ -16,7 +16,7 @@ const ModalAddStockTool = ({ open, onClose, toolId, onAdded }) => {
     setError(null);
     try {
       // resolve current user id
-      const me = await api.get('/api/user/me');
+      const me = await api.get('/users/me');
       const userId = me.data?.id;
       if (!userId) throw new Error('Usuario no identificado');
 

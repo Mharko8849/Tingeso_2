@@ -47,12 +47,18 @@ build:
       context: Backend/Microservices/users
       jib: {}
 
+    - image: mharko/frontend
+      context: Frontend/my-app
+      docker:
+        dockerfile: Dockerfile
+
 manifests:
   rawYaml:
     - Backend/Kubernetes-Config/Global/*.yaml
     - Backend/Kubernetes-Config/DB/*.yaml
     - Backend/Kubernetes-Config/Infrastructure/*.yaml
     - Backend/Kubernetes-Config/Microservices/*.yaml
+    - Frontend/Kubernetes-Config/*.yaml
 
 deploy:
   kubectl: {}
@@ -68,3 +74,4 @@ profiles:
         - Backend/Kubernetes-Config-Prod/DB/*.yaml
         - Backend/Kubernetes-Config-Prod/Infrastructure/*.yaml
         - Backend/Kubernetes-Config-Prod/Microservices/*.yaml
+        - Frontend/Kubernetes-Config-Prod/*.yaml

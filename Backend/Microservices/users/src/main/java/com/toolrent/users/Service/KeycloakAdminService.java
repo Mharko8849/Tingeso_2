@@ -2,6 +2,7 @@ package com.toolrent.users.Service;
 
 import com.toolrent.users.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class KeycloakAdminService {
     private String clientSecret;
 
     @Autowired
+    @Qualifier("externalRestTemplate")
     private RestTemplate restTemplate;
 
     // Obtener Token de Administrador

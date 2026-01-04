@@ -57,7 +57,7 @@ const ReturnToolCard = ({ item, onStateChange, disabled = false }) => {
 
     setLoadingFine(true);
     try {
-      const url = `/api/loantool/fine/${item.id}`;
+      const url = `/loan-tools/fine/${item.id}`;
       console.debug('[ReturnToolCard] requesting fine', { url, params: { state } });
       // Use query param (state) so GET doesn't require a body
       const res = await api.get(url, { params: { state } });

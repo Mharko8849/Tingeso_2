@@ -151,7 +151,7 @@ const ReturnsLoanSummary = () => {
                                   const payload = {};
                                   items.forEach(it => { payload[it.id] = stateToolMap[it.id]; });
                                   console.debug('[Devolver] payload a enviar:', payload);
-                                  const meResp = await api.get('/api/user/me');
+                                  const meResp = await api.get('/users/me');
                                   const employeeId = meResp?.data?.id;
                                   if (!employeeId) throw new Error('No pude obtener tu id de usuario (employee)');
                                   const url = `/api/loantool/receive/all/loan/${loan.id}/user/${employeeId}`;

@@ -39,14 +39,14 @@ const ResumeLoan = () => {
           try {
             const loanId = data.loanId || sessionStorage.getItem('order_loan_id');
             if (loanId) {
-              const r = await api.get(`/api/loan/${loanId}`);
+              const r = await api.get(`/loans/${loanId}`);
               const loan = r.data;
               if (loan) {
                 if (loan.initDate) setInitDate(loan.initDate.slice(0,10));
                 if (loan.returnDate) setReturnDate(loan.returnDate.slice(0,10));
                 // fetch total from backend to mirror read-only summary behaviour
                 try {
-                  const t = await api.get(`/api/loantool/total/${loanId}`);
+                  const t = await api.get(`/loan-tools/total/${loanId}`);
                   setTotal(Number(t.data || 0));
                 } catch (e) {
                   setTotal(0);
@@ -103,12 +103,12 @@ const ResumeLoan = () => {
     // Pre-check: verify the client does not already have active loans for these tools
     try {
       const clientId = resume.client.id;
-      const loansResp = await api.get(`/api/loan/user/${clientId}`);
+      const loansResp = await api.get(`/loans/filter`, { params: { userId: clientId } });
       const loans = loansResp.data || [];
       const conflicts = [];
       for (const loan of loans) {
         // get all loan-tool relations for this loan
-        const lxtResp = await api.get(`/api/loantool/loan/${loan.id}`);
+        const lxtResp = await api.get(`/loan-tools/loan/${loan.id}`);
         const lxts = lxtResp.data || [];
         for (const lxt of lxts) {
           // tool object may be nested under idTool
@@ -136,7 +136,7 @@ const ResumeLoan = () => {
 
     setCreating(true);
     try {
-      const employeeResp = await api.get('/api/user/me');
+      const employeeResp = await api.get('/users/me');
       const employeeId = employeeResp.data?.id;
       if (!employeeId) throw new Error('No se pudo obtener el id del empleado logueado');
 
@@ -157,8 +157,8 @@ const ResumeLoan = () => {
         try {
           const payload = { loanId: loanId, toolId: Number(it.id) };
           console.log('Creating LoanXTools for', payload);
-          // backend expects path parameters: /api/loantool/create/{loanId}/{toolId}
-          const r = await api.post(`/api/loantool/create/${loanId}/${Number(it.id)}`);
+          // backend expects path parameters: /loan-tools/add/{loanId}/{toolId}
+          const r = await api.post(`/loan-tools/add/${loanId}/${Number(it.id)}`);
           if (r.data && r.data.id) loanXIds.push(r.data.id);
         } catch (e) {
           const status = e?.response?.status;
@@ -178,8 +178,8 @@ const ResumeLoan = () => {
       }
 
   // call batch give endpoint to mark all as PRESTADA in one transaction
-  // backend exposes /api/loantool/give/all/user/{idUser}
-  await api.post(`/api/loantool/give/all/user/${employeeId}`, loanXIds);
+  // backend exposes /loan-tools/give/all?employeeId={idUser}
+  await api.post(`/loan-tools/give/all`, loanXIds, { params: { employeeId } });
 
       // success: clear resume and selected client and navigate to orders list
       sessionStorage.removeItem('order_resume');

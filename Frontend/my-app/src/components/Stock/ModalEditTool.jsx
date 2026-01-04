@@ -33,7 +33,7 @@ const ModalEditTool = ({ open, onClose, tool, onUpdated }) => {
       const priceRent = Number(form.priceRent) || 0;
       const priceFineAtDate = Number(form.priceFineAtDate) || 0;
 
-      const me = await api.get('/api/user/me');
+      const me = await api.get('/users/me');
       const userId = me.data?.id;
       if (!userId) throw new Error('Usuario no identificado');
 

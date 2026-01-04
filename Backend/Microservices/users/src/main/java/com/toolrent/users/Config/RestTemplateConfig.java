@@ -16,4 +16,9 @@ public class RestTemplateConfig {
 
         return restTemplate;
     }
+
+    @Bean("externalRestTemplate")
+    public RestTemplate externalRestTemplate() {
+        return new RestTemplate();
+    }
 }

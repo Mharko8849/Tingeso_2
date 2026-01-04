@@ -23,11 +23,17 @@ const Login = () => {
       // Use axios instance which points to backend (VITE env vars or defaults)
       const resp = await api.post('/users/login', body);
       const data = resp.data;
-      // store tokens locally (the backend returns a structure { token: { access_token, refresh_token }, user: {...} })
+      // store tokens locally (the backend returns a structure { token_info: { access_token, refresh_token }, user: {...} })
       // Support both old and new shapes for compatibility.
       if (data) {
+        // shape: { token_info: { access_token, ... }, user: ... }
+        if (data.token_info && data.token_info.access_token) {
+          localStorage.setItem('access_token', data.token_info.access_token);
+          if (data.token_info.refresh_token) localStorage.setItem('refresh_token', data.token_info.refresh_token);
+          localStorage.setItem('app_token', data.token_info.access_token);
+        }
         // shape: { access_token, refresh_token }
-        if (data.access_token) {
+        else if (data.access_token) {
           localStorage.setItem('access_token', data.access_token);
           if (data.refresh_token) localStorage.setItem('refresh_token', data.refresh_token);
         }
@@ -38,6 +44,10 @@ const Login = () => {
           if (data.token.refresh_token) localStorage.setItem('refresh_token', data.token.refresh_token);
           // also keep alias used elsewhere
           localStorage.setItem('app_token', data.token.access_token);
+        }
+
+        if (data.user) {
+          localStorage.setItem('app_user', JSON.stringify(data.user));
         }
       }
   // redirect to home using History API (path-based routing)

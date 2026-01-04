@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Badge from '../Badges/Badge';
 import api from '../../services/http-common';
+import { getUser } from '../../services/auth';
 import ToolCard from '../Tools/ToolCard';
 import '../Tools/ToolDropdown.css';
 import PaginationBar from '../Common/PaginationBar';
@@ -23,7 +24,7 @@ const OrderBuilder = ({ onClose, onCreated }) => {
     // fetch clients (admins can view all clients)
     const fetchClients = async () => {
       try {
-        const resp = await api.get('/api/user/clients');
+        const resp = await api.get('/users/clients');
         setClients(resp.data || []);
       } catch (e) {
         console.warn('Could not fetch clients', e);
@@ -41,7 +42,7 @@ const OrderBuilder = ({ onClose, onCreated }) => {
     try {
       const params = {};
       if (q) params.q = q;
-      const resp = await api.get('/api/inventory/filter', { params });
+      const resp = await api.get('/inventory/filter', { params });
       const inv = resp.data || [];
       const map = new Map();
       (inv || []).forEach((entry) => {
@@ -101,23 +102,33 @@ const OrderBuilder = ({ onClose, onCreated }) => {
     if (!selectedClient) { setAlert({ severity: 'error', message: 'Selecciona un cliente' }); return; }
     if (!items || items.length === 0) { setAlert({ severity: 'error', message: 'Añade al menos una herramienta' }); return; }
 
-    const payload = {
-      clientId: selectedClient.id,
-      items: items.map((i) => ({ toolId: i.id, quantity: i.qty })),
-    };
-
     try {
-      // Try to POST to backend /api/orders (assumed contract). If backend not present we fallback to success.
-      const resp = await api.post('/api/orders', payload);
+      const user = getUser();
+      const employeeId = user ? user.id : null;
+      if (!employeeId) throw new Error("No se pudo identificar al empleado");
+
+      const initDate = new Date().toISOString().split('T')[0];
+      const returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+      // 1. Create Loan
+      const loanResp = await api.post(`/loans/create/${selectedClient.id}`, null, {
+        params: { employeeId, initDate, returnDate }
+      });
+      const loan = loanResp.data;
+
+      // 2. Add Items
+      for (const item of items) {
+        for (let i = 0; i < item.qty; i++) {
+           await api.post(`/loan-tools/add/${loan.id}/${item.id}`);
+        }
+      }
+
       setAlert({ severity: 'success', message: 'Pedido creado correctamente' });
-      if (onCreated) onCreated(resp.data);
+      if (onCreated) onCreated(loan);
       setTimeout(() => { if (onClose) onClose(); }, 900);
     } catch (e) {
-      console.warn('createOrder failed, fallback', e);
-      // fallback: pretend success
-      setAlert({ severity: 'success', message: 'Pedido (simulado) creado correctamente' });
-      if (onCreated) onCreated(payload);
-      setTimeout(() => { if (onClose) onClose(); }, 900);
+      console.warn('createOrder failed', e);
+      setAlert({ severity: 'error', message: 'Error creando pedido: ' + (e.response?.data?.message || e.message) });
     }
   };
 

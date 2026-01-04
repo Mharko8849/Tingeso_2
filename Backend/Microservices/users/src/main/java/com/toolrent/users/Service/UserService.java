@@ -74,6 +74,14 @@ public class UserService {
     }
 
     public Map<String, Object> login(String username, String password) {
+        // Si el usuario ingresó un correo, buscamos el username asociado
+        if (username.contains("@")) {
+            User userByEmail = userRepository.findByEmail(username);
+            if (userByEmail != null) {
+                username = userByEmail.getUsername();
+            }
+        }
+
         Map<String, Object> keycloakResponse;
 
         try {

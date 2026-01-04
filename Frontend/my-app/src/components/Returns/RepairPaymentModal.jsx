@@ -28,8 +28,9 @@ const RepairPaymentModal = ({ open, onClose, loan, initialItems, onPaid }) => {
         }
 
         // Fallback: fetch from backend if initialItems not provided
-        const resp = await api.get(`/api/loantool/repair/${loan.id}`);
-        const data = resp?.data || [];
+        const resp = await api.get(`/loan-tools/loan/${loan.id}`);
+        const allItems = resp?.data || [];
+        const data = allItems.filter(it => it.needRepair === true);
         if (!mounted) return;
         setItems(data);
         const init = {};
@@ -69,11 +70,11 @@ const RepairPaymentModal = ({ open, onClose, loan, initialItems, onPaid }) => {
         if (!val || val <= 0) throw new Error('Todos los montos deben ser mayores que 0');
       }
       const totalCost = items.reduce((acc, it) => acc + Number(amounts[it.id] || 0), 0);
-      const meResp = await api.get('/api/user/me');
+      const meResp = await api.get('/users/me');
       const adminUser = meResp?.data?.id;
       if (!adminUser) throw new Error('No pude obtener tu id de usuario (employee)');
       const payload = { adminUser: adminUser, cost: Number(totalCost) };
-      await api.post(`/api/loantool/repair/${loan.id}/pay`, payload);
+      await api.post(`/loan-tools/pay/repair/${loan.id}`, payload);
       try { alert?.show?.({ severity: 'success', message: 'Reparaciones pagadas correctamente.', autoHideMs: 4000 }); } catch (e) {}
       onPaid && onPaid();
       onClose && onClose();

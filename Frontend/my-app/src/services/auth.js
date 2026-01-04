@@ -35,7 +35,21 @@ export function getToken() {
 export function getUser() {
   const token = getToken();
   if (!token) return null;
-  return parseJwt(token);
+  let user = parseJwt(token);
+  const storedUser = localStorage.getItem('app_user');
+  if (storedUser) {
+    try {
+      const dbUser = JSON.parse(storedUser);
+      user = { ...user, ...dbUser };
+      // Ensure roles are available if token is missing them but DB user has role
+      if ((!user.realm_access || !user.realm_access.roles) && dbUser.role) {
+        user.realm_access = { roles: [dbUser.role] };
+      }
+    } catch (e) {
+      // ignore json error
+    }
+  }
+  return user;
 }
 
 export function subscribe(cb) {

@@ -49,7 +49,7 @@ const ClientsAdmin = () => {
     try {
       const params = {};
       if (stateVal) params.state = stateVal;
-      const resp = await api.get('/api/user/filter', { params });
+      const resp = await api.get('/users/filter', { params });
       const data = resp.data || [];
       // keep only users whose role looks like CLIENT as a safeguard
       let filtered = (data || []).filter((u) => {

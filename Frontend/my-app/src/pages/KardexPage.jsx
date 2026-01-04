@@ -32,7 +32,7 @@ const KardexPage = () => {
       if (fromVal) params.initDate = fromVal;
       if (toVal) params.finalDate = toVal;
 
-      const resp = await api.get('/api/kardex/filter', { params });
+      const resp = await api.get('/kardex/filter', { params });
       setMovements(Array.isArray(resp.data) ? resp.data : resp.data?.movements || []);
     } catch (err) {
       console.error('Error fetching /kardex/filter', err);

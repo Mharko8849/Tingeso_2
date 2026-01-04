@@ -53,6 +53,12 @@ public class LoanToolController {
         return ResponseEntity.ok(total);
     }
 
+    @GetMapping("/fine/{loanToolId}")
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
+    public ResponseEntity<Integer> getFinePreview(@PathVariable Long loanToolId, @RequestParam String state) {
+        return ResponseEntity.ok(loanToolService.getFinePreview(loanToolId, state));
+    }
+
     // POST
 
     @PostMapping("/add/{loanId}/{toolId}")

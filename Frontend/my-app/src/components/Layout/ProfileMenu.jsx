@@ -89,6 +89,7 @@ const ProfileMenu = () => {
               setToken(null);
               localStorage.removeItem("access_token");
               localStorage.removeItem("refresh_token");
+              localStorage.removeItem("app_user");
               
               if (initialized && keycloak.authenticated) {
                 keycloak.logout();

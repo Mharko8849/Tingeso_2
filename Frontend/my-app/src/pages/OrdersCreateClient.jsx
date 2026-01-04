@@ -53,7 +53,9 @@ const OrdersCreateClient = () => {
         const employeeId = me.data?.id;
         if (!employeeId) throw new Error('No se pudo obtener el id del empleado');
         // call create loan with init and return dates as request params
-        const resp = await api.post(`/loans/create/${employeeId}`, selected, { params: { initDate: initDate, returnDate: returnDate } });
+        // Backend expects: POST /loans/create/{userId}?employeeId=...&initDate=...&returnDate=...
+        const clientId = selected.id || selected; 
+        const resp = await api.post(`/loans/create/${clientId}`, null, { params: { employeeId, initDate, returnDate } });
         const created = resp.data;
         if (created && created.id) {
           try { sessionStorage.setItem('order_loan_id', String(created.id)); } catch (e) { /* ignore */ }

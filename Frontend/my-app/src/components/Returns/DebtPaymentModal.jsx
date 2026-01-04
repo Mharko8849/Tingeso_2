@@ -15,7 +15,7 @@ const DebtPaymentModal = ({ open, onClose, loan, totalFine, onPaid }) => {
     (async () => {
       try {
         // Cargar herramientas con multa asociadas al préstamo
-        const resp = await api.get(`/api/loantool/loan/${loan.id}`);
+        const resp = await api.get(`/loan-tools/loan/${loan.id}`);
         if (!mounted) return;
         const data = Array.isArray(resp?.data) ? resp.data : [];
         // Filtrar solo las que tienen multa/deuda > 0
@@ -41,11 +41,11 @@ const DebtPaymentModal = ({ open, onClose, loan, totalFine, onPaid }) => {
     if (!loan) return;
     setSubmitting(true);
     try {
-      const meResp = await api.get('/api/user/me');
+      const meResp = await api.get('/users/me');
       const employeeId = meResp?.data?.id;
       if (!employeeId) throw new Error('No pude obtener tu id de usuario (employee)');
-      const url = `/api/loantool/paydebt/${loan.id}/user/${employeeId}`;
-      await api.post(url);
+      const url = `/loan-tools/pay/${loan.id}`;
+      await api.post(url, null, { params: { employeeId } });
       try { alert?.show?.({ severity: 'success', message: 'Deuda pagada correctamente.', autoHideMs: 3000 }); } catch (e) {}
       onPaid && onPaid();
       onClose && onClose();

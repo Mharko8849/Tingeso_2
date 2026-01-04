@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '../components/Layout/NavBar';
 import api from '../services/http-common';
+import { getUser } from '../services/auth';
 import Badge from '../components/Badges/Badge';
 import { statusToBadgeVariant } from '../components/Badges/statusToBadge';
 import BackButton from '../components/Common/BackButton';
@@ -52,7 +53,11 @@ const LoanSummaryReadOnly = () => {
     setSuccess('');
     setClosing(true);
     try {
-      await api.post(`/loan-tools/pay/${loan.id}`);
+      const user = getUser();
+      const employeeId = user ? user.id : null;
+      if (!employeeId) throw new Error("No se pudo identificar al empleado");
+      
+      await api.post(`/loan-tools/pay/${loan.id}`, null, { params: { employeeId } });
       setSuccess('El pedido ha sido finalizado manualmente.');
       // refrescar datos del préstamo para reflejar el nuevo estado
       const refreshed = await api.get(`/loans/${loan.id}`);

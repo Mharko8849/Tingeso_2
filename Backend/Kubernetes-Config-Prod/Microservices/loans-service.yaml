@@ -82,6 +82,12 @@ spec:
               name: global-config
               key: KEYCLOAK_URL
 
+        - name: KEYCLOAK_ISSUER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: global-config
+              key: KEYCLOAK_ISSUER_URL
+
         - name: KEYCLOAK_REALM
           valueFrom:
             configMapKeyRef:
