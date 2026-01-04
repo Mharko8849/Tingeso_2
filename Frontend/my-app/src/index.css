@@ -1,0 +1,192 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  /* Use normal document flow (not centered flex) so pages scroll from the top.
+     Previously `display:flex; place-items:center` caused short pages to be
+     vertically centered in the viewport which created the large gap under
+    the fixed navbar on some pages (e.g. InventoryPage). */
+  display: block;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Primary CTA used across pages (matches ToolDetail .td-quote style) */
+.primary-cta {
+  background: #2b6cb0;
+  color: #fff;
+  border: none;
+  padding: 8px 12px; /* reduced vertical thickness */
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.primary-cta:hover { opacity: 0.95 }
+
+/* Larger controls for pages that want an emphasized UI (used by Orders) */
+.big-page {
+  font-size: 1.125rem; /* ~18px base */
+}
+.big-page h2 {
+  font-size: 2.4rem;
+}
+.big-page p {
+  font-size: 1.125rem;
+  color: rgba(0,0,0,0.7);
+}
+.primary-cta.large {
+  padding: 12px 18px;
+  font-size: 1.05rem;
+  border-radius: 10px;
+}
+.primary-cta.large svg { width: 18px; height: 18px }
+
+/* Secondary action style (used by modals and cancelling actions) */
+.secondary-cta {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 6px 10px; /* slightly smaller */
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.secondary-cta:hover { opacity: 0.98 }
+
+/* Reusable small card for filters/search rows */
+.filters-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  display: block;
+}
+
+/* Horizontal filters row: compact, responsive, with actions aligned right */
+.filters-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.filters-row { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.filter-item {
+  flex: 0 1 140px; /* a bit smaller so more items fit horizontally */
+  min-width: 120px;
+  padding: 6px 12px; /* match button vertical rhythm */
+  height: 36px; /* align height with buttons */
+  font-size: 0.95rem; /* a touch smaller text to fit */
+  border-radius: 8px; /* match button radius */
+  border: 1px solid #d1d5db;
+  background: #fff;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+}
+.filter-item.date { padding: 6px 8px; }
+.filters-actions {
+  margin-left: auto; /* push actions to the right */
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* Wrapper for controls that need vertical layout but still respect filter-item width */
+.filter-item-wrapper {
+  flex: 0 1 140px;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 720px) {
+  .filter-item { flex: 0 0 160px; min-width: 140px; }
+}
+
+/* Ensure action buttons in filters have room for their text */
+.filters-actions .primary-cta {
+  min-width: 140px;
+  justify-content: center;
+}
+.filters-actions .secondary-cta {
+  min-width: 110px;
+  justify-content: center;
+}
+
+/* Utility: horizontal padding used across pages (matches className="px-6")
+   Provide a small global left/right inset so content isn't flush to the viewport edge. */
+.px-6 {
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .px-6 { padding-left: 12px; padding-right: 12px; }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

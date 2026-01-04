@@ -1,0 +1,106 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  padding: 0 0.75rem;
+  z-index: 1000;
+  gap: 20px;
+}
+
+/* LEFT: logo y otros elementos */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 0; /* no crece innecesariamente */
+}
+
+/* CENTER: buscador y dropdown */
+.navbar-center {
+  flex: 1; /* ocupa todo el espacio central disponible */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* RIGHT: perfil */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0; /* solo el espacio que necesita el icono */
+  padding-left: 1rem; /* espacio entre el center y el icono */
+  padding-right: 3rem; /* evita que quede pegado al borde derecho */
+  gap: 10px;
+}
+
+/* Administracion styles */
+.nav-admin {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.admin-button {
+  background: linear-gradient(180deg,#ffffff,#f6f7fb);
+  border: 1px solid #e6e9ef;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #222;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+}
+
+.nav-admin:hover .admin-button {
+  background: linear-gradient(180deg,#f8fafc,#eef2ff);
+}
+
+.admin-dropdown {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(16,24,40,0.08);
+  padding: 6px 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+  z-index: 1200;
+}
+
+.nav-admin:hover .admin-dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.admin-item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.admin-item:hover {
+  background: #f8fafc;
+}

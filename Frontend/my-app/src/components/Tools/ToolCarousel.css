@@ -1,0 +1,176 @@
+/* Styles for ToolCarousel component (Bootstrap-based) */
+.tool-carousel {
+  position: relative;
+  /* Use full container width but avoid forcing viewport-based width which causes horizontal overflow */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px; /* small internal padding so cards don't touch the edges */
+  box-sizing: border-box;
+  background: transparent; /* keep background neutral; change if you want a band */
+  overflow: hidden; /* prevent children from creating page-level horizontal scroll */
+}
+
+.tool-list {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.carousel-viewport {
+  width: 100%;
+}
+
+.carousel-track {
+  transition: transform 420ms cubic-bezier(.2,.9,.2,1);
+}
+
+.carousel-page {
+  /* each page is full width, and contains visibleCount cards laid out in row */
+  display: flex;
+  gap: 12px;
+  padding: 8px 0; /* reduce horizontal inner padding so cards can expand */
+  box-sizing: border-box;
+}
+
+.tool-card {
+  /* Let flex-basis (inline style from parent) control width so cards fill available space */
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0; /* allow shrinking; prevents unexpected overflow */
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Make room for a clickable overlay that does not affect layout */
+.tool-card {
+  position: relative;
+}
+
+.card-link-overlay {
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  z-index: 6; /* above content for click capture */
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  /* the overlay should capture pointer events; visual styles remain controlled by card */
+}
+
+.card-img-wrap {
+  height: 180px; /* slightly larger to give more visual weight */
+  overflow: hidden;
+  position: relative;
+  background: #f6f6f6;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.badge-visits {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #2b6cb0;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.carousel-btn.left {
+  left: 8px;
+}
+
+.carousel-btn.right {
+  right: 8px;
+}
+
+.tool-carousel .card-body {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Dots pagination */
+.dot-btn {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d1d5db;
+  border: none;
+  margin: 0 6px;
+  padding: 0;
+  cursor: pointer;
+}
+.dot-btn.active {
+  background: #2b6cb0;
+  box-shadow: 0 2px 6px rgba(43, 108, 176, 0.22);
+}
+
+/* Header/title */
+.tool-carousel h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* View more button style: based on .tool-btn but with colored background */
+.view-more-btn {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #2B7FFF; /* requested initial color */
+  color: #fff !important;
+  border: none;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.15s ease, filter 0.15s ease;
+  display: inline-block;
+}
+
+.view-more-btn:hover {
+  /* slightly darker */
+  background: #246fe6;
+  color: #e5e7eb !important; /* stay readable, slightly gray */
+}
+
+.view-more-btn:visited,
+.view-more-btn:active,
+.view-more-btn:focus {
+  color: #fff !important;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .tool-card {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .tool-card {
+    min-width: 160px;
+  }
+  .card-img-wrap {
+    height: 120px;
+  }
+}

@@ -1,0 +1,104 @@
+.filters-box {
+  background: #fff;
+  padding: 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+}
+.filters-box h4 {
+  margin: 0 0 12px 0;
+}
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.filter-row label {
+  font-size: 0.9rem;
+  color: #334155;
+}
+.filter-row input,
+.filter-row select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6e9ef;
+}
+.filter-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+.apply-btn {
+  background: #2B7FFF;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Reuse main action button style used across the app */
+.td-quote {
+  background: #2b6cb0;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.td-quote:hover { opacity: 0.95 }
+
+.reset-btn {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #e6e9ef;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.filter-reset {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+/* Range slider (dual) styles: we use two input[type=range] overlaid */
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 6px;
+}
+.range-wrap {
+  position: relative;
+  height: 30px;
+}
+.range-wrap input[type=range] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  pointer-events: none; /* only allow pointer on thumb */
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+.range-wrap input[type=range]::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #2B7FFF;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(43,127,255,0.2);
+}
+.range-wrap input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #e6eefc;
+  border-radius: 3px;
+}
+

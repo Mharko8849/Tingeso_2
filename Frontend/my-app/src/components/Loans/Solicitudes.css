@@ -1,0 +1,21 @@
+.solicitudes-container{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.sol-button{
+  background:#2c7be5;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:0.9rem;
+  cursor:pointer;
+}
+
+.sol-button.secondary{
+  background:#6c757d;
+}
+
+.sol-button:hover{opacity:0.95}

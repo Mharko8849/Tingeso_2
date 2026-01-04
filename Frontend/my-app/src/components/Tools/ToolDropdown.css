@@ -1,0 +1,170 @@
+.tool-btn {
+  padding: 5px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.tool-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Overlay semitransparente oscuro */
+.tool-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  overflow: auto; /* allow scrolling when content is taller than viewport */
+  z-index: 2000;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Contenido del mega menú */
+.tool-content {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 30px 5rem; /* margen desde los bordes */
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  max-height: calc(100vh - 160px); /* keep some space around and enable internal scroll */
+  overflow: auto;
+}
+
+/* Botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Grid de secciones equitativo (Legacy/Admin) */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+/* Grid de secciones equitativo (New ToolDropdown) */
+.tool-grid-container {
+  padding: 10px;
+}
+
+.tool-grid-container h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.tool-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+  gap: 12px;
+}
+
+.category-item {
+  display: block;
+  padding: 5px 0;
+  color: #333;
+  text-decoration: none;
+  border-radius: 4px;
+  background-color: transparent;
+  transition: background 0.2s, padding-left 0.2s;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-item:hover {
+  background-color: rgba(0,0,0,0.05);
+  padding-left: 5px;
+  color: #333;
+}
+
+.category-item.all-categories {
+  font-weight: 600;
+  /* Remove special background for consistency, or keep it very subtle if needed. 
+     User asked for "transparent", so I'll make it transparent but bold. */
+  background-color: transparent;
+  color: #333;
+}
+
+.category-item.all-categories:hover {
+  background-color: rgba(0,0,0,0.05);
+  padding-left: 5px;
+}
+
+/* Responsive adjustments if needed */
+@media (max-width: 600px) {
+  .tool-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Secciones y links */
+.tool-section h4 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.tool-section a {
+  display: block;
+  padding: 5px 0;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+  transition: background 0.2s, padding-left 0.2s;
+}
+
+.tool-section a:hover {
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  padding-left: 5px;
+}
+
+/* Buttons used in AdminDropdown to behave visually like links */
+.link-as-anchor {
+  display: block;
+  padding: 5px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  color: #333;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, padding-left 0.2s;
+}
+
+.link-as-anchor:hover {
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  padding-left: 5px;
+}

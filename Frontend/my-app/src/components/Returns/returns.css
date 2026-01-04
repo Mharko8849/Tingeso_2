@@ -1,0 +1,190 @@
+/* Styles for returns components - make tool cards use horizontal space */
+.return-tool-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left; /* override global centering */
+}
+
+.return-tool-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0; /* allow truncation */
+  flex: 1 1 auto; /* let left side take remaining space */
+  padding-right: 1rem;
+}
+
+.return-tool-title {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  text-align: left;
+}
+
+.return-tool-activity {
+  color: #000000;
+  font-size: 0.95rem;
+}
+
+.return-tool-right {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  white-space: nowrap;
+  flex: 0 0 auto; /* do not grow */
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.card-list .card {
+  width: 100%;
+}
+
+/* More specific selector to override other .card rules that may center contents */
+.card.return-tool-card, .card-list .return-tool-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+/* New full-width horizontal rect inside the li */
+.tool-rect {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.tool-name {
+  flex: 2 1 40%;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: left;
+}
+
+.tool-activity {
+  flex: 1 1 20%;
+  color: #000000;
+  font-size: 0.95rem;
+  text-align: left;
+}
+.tool-activity .muted { color: #000000; font-weight: 600; }
+
+.tool-cost {
+  flex: 0 0 150px;
+  text-align: right;
+  color: #111827;
+}
+
+.tool-debt {
+  flex: 0 0 120px;
+  text-align: right;
+  color: #111827;
+}
+
+.tool-state {
+  flex: 0 0 220px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.tool-state-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+/* Repair modal input placeholder styling */
+.repair-amount-input {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  width: 160px;
+  font-size: 1rem; /* controls the entered text size */
+}
+.repair-amount-input::placeholder { font-size: 1rem; color: #9CA3AF; }
+.repair-amount-input::-webkit-input-placeholder { font-size: 1rem; color: #9CA3AF; }
+.repair-amount-input:-ms-input-placeholder { font-size: 1rem; color: #9CA3AF; }
+
+/* Larger modal box for repair payments */
+.repair-modal {
+  width: 95%;
+  max-width: 980px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.tool-state-label {
+  color: #374151;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .tool-rect { gap: 1rem; }
+  .tool-name { flex: 1 1 50%; }
+  .tool-activity { flex: 1 1 30%; }
+  .tool-cost, .tool-debt { flex: 0 0 110px; }
+}
+
+@media (max-width: 480px) {
+  .tool-rect { flex-direction: column; align-items: flex-start; }
+  .tool-cost, .tool-debt { text-align: left; }
+}
+
+/* Ensure list styling doesn't limit card width */
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.card-list .card {
+  width: 100%;
+}
+
+.return-tool-meta {
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.return-tool-meta .meta-value {
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+/* Responsive: on very small screens, stack vertically but keep spacing neat */
+@media (max-width: 520px) {
+  .return-tool-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .return-tool-right {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+}
