@@ -33,6 +33,8 @@ spec:
           value: "admin"
         - name: KC_PROXY
           value: "edge"
+        - name: KC_HOSTNAME_URL
+          value: "http://192.168.39.130:31000"
 
         resources:
           requests:
