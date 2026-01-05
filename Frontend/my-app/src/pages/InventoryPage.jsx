@@ -65,15 +65,15 @@ const InventoryPage = ({ category = null }) => {
       // Group inventory entries by tool id and compute available stock
       const map = new Map();
       (inv || []).forEach((entry) => {
-        const t = entry.idTool || {};
+        const t = entry.toolFull || entry.idTool || {};
         const tid = t.id;
         if (!map.has(tid)) {
           map.set(tid, {
             id: tid,
             name: t.toolName || t.name || '—',
-            price: t.priceRent || t.price || 0,
+            price: t.amounts?.priceRent || t.priceRent || t.price || 0,
             category: t.category || category,
-            image: t.imageUrl ? `/images/${t.imageUrl}` : 'http://localhost:8090/images/NoImage.png',
+            image: t.imageUrl ? `/images/${t.imageUrl}` : '/NoImage.png',
             stock: 0,
           });
         }

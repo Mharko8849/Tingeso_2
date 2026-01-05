@@ -47,7 +47,7 @@ const ToolDetail = (props) => {
       // There is no GET /tools/{id}. Use inventory filter to fetch a tool by id.
       const res = await api.get('/inventory/filter', { params: { idTool: id } });
       const arr = res.data || [];
-      const t = (arr[0] && arr[0].idTool) || {};
+      const t = (arr[0] && (arr[0].toolFull || arr[0].idTool)) || {};
 
       if (!t || !t.id) {
         setTool(null);
@@ -66,13 +66,13 @@ const ToolDetail = (props) => {
       const mapped = {
         id: t.id,
         name: t.toolName ?? t.name ?? '',
-        price: typeof t.priceRent === 'number' ? t.priceRent : (typeof t.price === 'number' ? t.price : null),
+        price: typeof t.amounts?.priceRent === 'number' ? t.amounts.priceRent : (typeof t.priceRent === 'number' ? t.priceRent : (typeof t.price === 'number' ? t.price : null)),
         category: t.category ?? '',
         description: '',
         specs: [],
         image: t.imageUrl ? `/images/${t.imageUrl}` : '',
-        repoCost: typeof t.repoCost === 'number' ? t.repoCost : null,
-        priceFineAtDate: typeof t.priceFineAtDate === 'number' ? t.priceFineAtDate : null,
+        repoCost: typeof t.amounts?.repoCost === 'number' ? t.amounts.repoCost : (typeof t.repoCost === 'number' ? t.repoCost : null),
+        priceFineAtDate: typeof t.amounts?.priceFineAtDate === 'number' ? t.amounts.priceFineAtDate : (typeof t.priceFineAtDate === 'number' ? t.priceFineAtDate : null),
       };
 
       setTool(mapped);
@@ -125,7 +125,7 @@ const ToolDetail = (props) => {
     showAlert('Se ha guardado el cambio correctamente', 'success');
   };
 
-  const DEFAULT_IMAGE = '/images/NoImage.png';
+  const DEFAULT_IMAGE = '/NoImage.png';
 
   return (
     <div className="td-page bg-gray-50 min-h-screen">

@@ -45,7 +45,7 @@ const Home = () => {
         const tools = response.data.map(item => ({
           ...item.tool,
           name: item.tool.toolName || item.tool.name,
-          price: item.tool.priceRent || item.tool.price,
+          price: item.tool.amounts?.priceRent || item.tool.priceRent || item.tool.price,
           image: getImageUrl(item.tool.imageUrl), // Use helper to resolve URL
           visits: item.totalLoans // Use visits to show loan count
         }));
