@@ -46,7 +46,7 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
-        const uploadResp = await api.post('/inventory/tools/upload-image', formData, {
+        const uploadResp = await api.post('/tools/upload-image', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         imageUrl = uploadResp.data.filename;
@@ -84,7 +84,7 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
         },
       };
 
-      await api.post(`/inventory/tools?userId=${userId}`, toolInput);
+      await api.post(`/tools?userId=${userId}`, toolInput);
 
       if (onAdded) onAdded();
       onClose();
