@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TOOL_CATEGORIES } from '../../constants/toolCategories';
+import api from '../../services/http-common';
 import './FiltersSidebar.css';
 
 /**
@@ -22,6 +22,19 @@ const FiltersSidebar = ({ onApply = () => {}, initial = {} }) => {
   // Stores the current sort order. Empty string means 'no specific order'.
   const [sort, setSort] = useState(initial.sort ?? '');
   const [category, setCategory] = useState(initial.category ?? '');
+  const [categoriesList, setCategoriesList] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/inventory/category');
+        setCategoriesList(response.data.map(c => c.name));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Resets all filters to their default values and notifies the parent component.
   const resetFilters = () => {
@@ -129,7 +142,7 @@ const FiltersSidebar = ({ onApply = () => {}, initial = {} }) => {
         <label>Filtrar por Categoría</label>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="">Todas las categorías</option>
-          {TOOL_CATEGORIES.map((cat) => (
+          {categoriesList.map((cat) => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>

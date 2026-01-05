@@ -55,11 +55,6 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
-        '/category': {
-          target: target,
-          changeOrigin: true,
-          secure: false,
-        },
       },
     },
   }

@@ -19,7 +19,7 @@ const ClientSearch = ({ selected, onSelect, reloadKey, hideHeader = false }) => 
             ...clientFull.user,
             id: clientFull.id, // Use client ID, not user ID
             userId: clientFull.user.id,
-            loans: Array.isArray(clientFull.loans) ? clientFull.loans.length : 0,
+            loans: clientFull.loans,
             stateClient: clientFull.stateClient
           }));
           setClients(mappedClients);
@@ -36,7 +36,7 @@ const ClientSearch = ({ selected, onSelect, reloadKey, hideHeader = false }) => 
   const filtered = clients.filter((c) => {
     if (!query) return true;
     const s = query.toLowerCase();
-    return (String(c.username || '') + ' ' + String(c.name || '') + ' ' + String(c.lastName || '') + ' ' + String(c.email || '')).toLowerCase().includes(s);
+    return (String(c.username||'') + ' ' + String(c.name||'') + ' ' + String(c.lastName||'') + ' ' + String(c.email||'')).toLowerCase().includes(s);
   });
 
   return (
@@ -49,7 +49,7 @@ const ClientSearch = ({ selected, onSelect, reloadKey, hideHeader = false }) => 
         <input placeholder="buscar por nombre/usuario/email" value={query} onChange={(e) => setQuery(e.target.value)} style={{ width: '100%', padding: 8, marginTop: 6 }} />
       )}
 
-      <div style={{ marginTop: 8, maxHeight: 360, overflowY: 'auto', overflowX: 'hidden', border: '1px solid #eee', borderRadius: 6, padding: 10, boxSizing: 'border-box' }}>
+  <div style={{ marginTop: 8, maxHeight: 360, overflowY: 'auto', overflowX: 'hidden', border: '1px solid #eee', borderRadius: 6, padding: 10, boxSizing: 'border-box' }}>
         {/* Column headers aligned with the 4-column card grid */}
         {filtered.length > 0 && (
           <div style={{ display: 'grid', gridTemplateColumns: '20% 30% 15% 15% 20%', gap: 12, padding: '6px 8px', borderBottom: '1px solid #f1f5f9', marginBottom: 8 }}>

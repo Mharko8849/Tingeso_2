@@ -4,29 +4,30 @@ import ToolCarousel from "../components/Tools/ToolCarousel";
 import CategoriesGrid from "../components/Categories/CategoriesGrid";
 import api from "../services/http-common";
 import { useNavigate } from "react-router-dom";
+import { TOOL_CATEGORIES } from "../constants/toolCategories";
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return "/NoImage.png"; // Fallback image
   if (imagePath.startsWith("http")) return imagePath;
-  return `/images/${imagePath}`;
+  return `/images/${imagePath}`; 
 };
 
 const FALLBACK_CATEGORIES = [
-  {
-    title: "Herramientas Eléctricas",
-    image: 'Taladro.png',
+  { 
+    title: "Herramientas Eléctricas", 
+    image: 'Taladro.png', 
   },
-  {
-    title: "Generadores",
-    image: 'Generador.png',
+  { 
+    title: "Generadores", 
+    image: 'Generador.png', 
   },
-  {
-    title: "Construcción",
-    image: 'Pala.png',
+  { 
+    title: "Construcción", 
+    image: 'Pala.png', 
   },
-  {
-    title: "Seguridad",
-    image: 'SetCascoBotasGuante.png',
+  { 
+    title: "Seguridad", 
+    image: 'SetCascoBotasGuante.png', 
   },
 ];
 
@@ -44,8 +45,8 @@ const Home = () => {
         const tools = response.data.map(item => ({
           ...item.tool,
           name: item.tool.toolName || item.tool.name,
-          price: item.tool.amounts?.priceRent || item.tool.priceRent || item.tool.price,
-          image: getImageUrl(item.tool.imageUrl),
+          price: item.tool.priceRent || item.tool.price,
+          image: getImageUrl(item.tool.imageUrl), // Use helper to resolve URL
           visits: item.totalLoans // Use visits to show loan count
         }));
         setRankingTools(tools);
@@ -61,7 +62,7 @@ const Home = () => {
   useEffect(() => {
     // 1. Extract unique categories from ranking
     const rankedCategoryNames = [...new Set(rankingTools.map(t => t.category).filter(Boolean))];
-
+    
     // 2. Build category objects from ranking data (using the first tool's image)
     let finalCats = rankedCategoryNames.map(catName => {
       const tool = rankingTools.find(t => t.category === catName);
@@ -108,7 +109,7 @@ const Home = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <NavBar />
-
+      
       {/* Header block: centered welcome */}
       <div style={{ paddingTop: '100px', paddingBottom: '24px' }} className="px-6 py-6">
         <div className="max-w-6xl mx-auto">
@@ -121,15 +122,15 @@ const Home = () => {
 
       {/* Most Popular (First Carousel) */}
       <section style={{ width: '100%', padding: 0 }}>
-        <ToolCarousel
-          tools={rankingTools}
-          title="Lo más popular"
+        <ToolCarousel 
+          tools={rankingTools} 
+          title="Lo más popular" 
           onViewMore={handleViewMorePopular}
         />
       </section>
 
       {/* Categories centered after first carousel */}
-      <div style={{ paddingTop: '50px' }} className="px-6 py-6">
+      <div style={{ paddingTop: '50px'}} className="px-6 py-6">
         <div className="max-w-6xl mx-auto">
           <CategoriesGrid
             categories={displayCategories}

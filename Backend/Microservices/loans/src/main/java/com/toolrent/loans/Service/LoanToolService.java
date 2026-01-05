@@ -57,10 +57,10 @@ public class LoanToolService {
         List<LoanToolFull> result = new ArrayList<>();
 
         int i = 0;
-        while (i < userLoans.size()) {
+        while(i < userLoans.size()) {
             List<LoanToolFull> tools = getByLoanId(userLoans.get(i).getId());
             result.addAll(tools);
-            i += 1;
+            i+=1;
         }
         return result;
     }
@@ -141,7 +141,7 @@ public class LoanToolService {
         int i = 0;
         while (i < ids.size()) {
             results.add(giveLoanTool(employeeId, ids.get(i)));
-            i += 1;
+            i+=1;
         }
         return results;
     }
@@ -175,8 +175,7 @@ public class LoanToolService {
         }
 
         try {
-            String url_inventory_return = inventoryServiceUrl + "/return/" + loanTool.getToolId() + "?targetState="
-                    + targetStateInventory;
+            String url_inventory_return = inventoryServiceUrl + "/return/" + loanTool.getToolId() + "?targetState=" + targetStateInventory;
             restTemplate.postForObject(url_inventory_return, null, Void.class);
         } catch (Exception e) {
             throw new RuntimeException("Error devolviendo stock en Inventory: " + e.getMessage());
@@ -223,10 +222,9 @@ public class LoanToolService {
                 results.add(updated);
 
                 totalFine += updated.getFine();
-                if ("DAÑO".equals(state))
-                    anyNeedRepair = true;
+                if ("DAÑO".equals(state)) anyNeedRepair = true;
             }
-            i += 1;
+            i+=1;
         }
 
         if (allToolsReturned(loanId)) {
@@ -262,7 +260,7 @@ public class LoanToolService {
 
         boolean paidSomething = false;
         int i = 0;
-        while (i < lxt.size()) {
+        while(i < lxt.size()){
             LoanTool l = lxt.get(i);
             if (l.getFine() > 0) {
                 createKardexEntry(l.getToolId(), "PAGO DEUDA", 1, l.getFine(), loan.getUserId(), adminId);
@@ -270,7 +268,7 @@ public class LoanToolService {
                 loanToolRepository.save(l);
                 paidSomething = true;
             }
-            i += 1;
+            i+=1;
         }
 
         if (paidSomething) {
@@ -334,24 +332,24 @@ public class LoanToolService {
         return false;
     }
 
-    public int getTotalDebt(Long loanId) {
+    public int getTotalDebt(Long loanId){
         List<LoanTool> lxt = loanToolRepository.findByLoanId(loanId);
         int totalDebt = 0;
         int i = 0;
-        while (i < lxt.size()) {
+        while(i < lxt.size()){
             totalDebt += lxt.get(i).getDebt();
-            i += 1;
+            i+=1;
         }
         return totalDebt;
     }
 
-    public int getTotalFine(Long loanId) {
+    public int getTotalFine(Long loanId){
         List<LoanTool> lxt = loanToolRepository.findByLoanId(loanId);
         int totalFine = 0;
         int i = 0;
-        while (i < lxt.size()) {
+        while(i < lxt.size()){
             totalFine += lxt.get(i).getFine();
-            i += 1;
+            i+=1;
         }
         return totalFine;
     }
@@ -366,15 +364,14 @@ public class LoanToolService {
 
     public int calculateFine(LoanTool lxt, String state) {
         ToolFull tool = getToolById(lxt.getToolId());
-        if (tool.getAmounts() == null)
-            return 0;
+        if (tool.getAmounts() == null) return 0;
 
         Loan loan = loanService.getLoanById(lxt.getLoanId());
 
         int daysFine = 0;
         Date now = new Date(System.currentTimeMillis());
         if (now.after(loan.getReturnDate())) {
-            long diff = ChronoUnit.DAYS.between(loan.getReturnDate().toLocalDate(), now.toLocalDate());
+            long diff = ChronoUnit.DAYS.between(loan.getReturnDate().toLocalDate(),now.toLocalDate());
             daysFine = (int) diff * tool.getAmounts().getPriceFineAtDate();
         }
 
@@ -394,7 +391,7 @@ public class LoanToolService {
         }
     }
 
-    public boolean isToolLoanedToUser(Long toolId, Long userId) {
+    private boolean isToolLoanedToUser(Long toolId, Long userId) {
         List<LoanFull> userLoans = loanService.getAllLoansByUserId(userId);
         int i = 0;
         while (i < userLoans.size()) {
@@ -402,10 +399,9 @@ public class LoanToolService {
             if (l.getRealReturnDate() == null) {
                 List<LoanTool> tools = loanToolRepository.findByLoanIdAndToolId(l.getId(), toolId);
                 long activeCount = tools.stream().filter(t -> !"DEVUELTA".equals(t.getToolActivity())).count();
-                if (activeCount > 0)
-                    return true;
+                if (activeCount > 0) return true;
             }
-            i += 1;
+            i+=1;
         }
         return false;
     }
@@ -413,12 +409,12 @@ public class LoanToolService {
     private boolean allToolsReturned(Long loanId) {
         List<LoanTool> list = loanToolRepository.findByLoanId(loanId);
         int i = 0;
-        while (i < list.size()) {
+        while(i < list.size()){
             String act = list.get(i).getToolActivity();
-            if (act == null || !act.equals("DEVUELTA")) {
+            if(act == null || !act.equals("DEVUELTA")){
                 return false;
             }
-            i += 1;
+            i+=1;
         }
         return true;
     }
@@ -478,6 +474,7 @@ public class LoanToolService {
                 lt.getToolActivity(),
                 lt.getDebt(),
                 lt.getFine(),
-                lt.getNeedRepair());
+                lt.getNeedRepair()
+        );
     }
 }

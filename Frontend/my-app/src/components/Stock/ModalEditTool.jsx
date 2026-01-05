@@ -8,33 +8,33 @@ const ModalEditTool = ({ open, onClose, tool, onUpdated }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    if (tool) {
-      setForm({
-        toolName: tool.toolName || tool.name || '',
-        category: tool.categoryId || tool.idCategory || '',
-        repoCost: tool.amounts?.repoCost || tool.repoCost || '',
-        priceRent: tool.amounts?.priceRent || tool.priceRent || '',
-        priceFineAtDate: tool.amounts?.priceFineAtDate || tool.priceFineAtDate || '',
-      });
-    }
-  }, [tool]);
+  const [categoriesList, setCategoriesList] = useState([]);
 
   useEffect(() => {
     if (open) {
       const fetchCategories = async () => {
         try {
-          const res = await api.get('/category');
-          setCategories(res.data || []);
-        } catch (e) {
-          console.error('Failed to fetch categories', e);
+          const response = await api.get('/inventory/category');
+          setCategoriesList(response.data.map(c => c.name));
+        } catch (error) {
+          console.error('Error fetching categories:', error);
         }
       };
       fetchCategories();
     }
   }, [open]);
+
+  useEffect(() => {
+    if (tool) {
+      setForm({
+        toolName: tool.toolName || tool.name || '',
+        category: tool.category || '',
+        repoCost: tool.repoCost ?? '',
+        priceRent: tool.priceRent ?? tool.price ?? '',
+        priceFineAtDate: tool.priceFineAtDate ?? '',
+      });
+    }
+  }, [tool]);
 
   if (!open || !tool) return null;
 
@@ -51,37 +51,21 @@ const ModalEditTool = ({ open, onClose, tool, onUpdated }) => {
       const userId = me.data?.id;
       if (!userId) throw new Error('Usuario no identificado');
 
-      let imageFilename = tool.imageUrl; // Keep existing if no new file
-
-      // Upload new image if provided
-      if (file) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', file);
-
-        const uploadRes = await api.post('/tools/upload-image', imageFormData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-
-        imageFilename = uploadRes.data?.filename;
-      }
-
       const toolPayload = {
-        tool: {
-          toolName: String(form.toolName).trim(),
-          categoryId: Number(form.category) || null,
-          imageUrl: imageFilename || null,
-        },
-        amounts: {
-          repoCost: Math.round(repoCost),
-          priceRent: Math.round(priceRent),
-          priceFineAtDate: Math.round(priceFineAtDate),
-        }
+        toolName: String(form.toolName).trim(),
+        category: form.category || '',
+        repoCost: Math.round(repoCost),
+        priceRent: Math.round(priceRent),
+        priceFineAtDate: Math.round(priceFineAtDate),
       };
 
+      const formData = new FormData();
+      formData.append('tool', new Blob([JSON.stringify(toolPayload)], { type: 'application/json' }));
+      if (file) formData.append('image', file);
+
       const toolId = tool.id || tool.idTool;
-      // Send JSON
-      const response = await api.put(`/tools/${toolId}`, toolPayload, {
-        params: { userId }
+      const response = await api.put(`/api/tool/${toolId}/user/${userId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (onUpdated) onUpdated(response.data);
@@ -126,8 +110,8 @@ const ModalEditTool = ({ open, onClose, tool, onUpdated }) => {
   };
 
   return (
-    <div className="mas-backdrop">
-      <div className="mas-modal mas-modal-large" style={{ position: 'relative' }}>
+    <div className="mas-backdrop" onClick={onClose}>
+      <div className="mas-modal mas-modal-large" style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
         <button className="mas-close" onClick={onClose} aria-label="Cerrar">
           ×
         </button>
@@ -140,14 +124,14 @@ const ModalEditTool = ({ open, onClose, tool, onUpdated }) => {
 
           <div className="mas-row">
             <label>Categoría</label>
-            <select
-              value={form.category}
+            <select 
+              value={form.category} 
               onChange={(e) => setForm((s) => ({ ...s, category: e.target.value }))}
               style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
             >
               <option value="">Seleccionar categoría</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              {categoriesList.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>

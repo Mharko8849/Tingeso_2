@@ -25,7 +25,7 @@ echo "[3/5] La IP de Minikube es: $MINIKUBE_IP"
 # 4. Ejecutar Skaffold
 echo "[4/5] Ejecutando Skaffold (Perfil Desarrollo)..."
 # Skaffold run espera a que los deployments estén estables por defecto
-skaffold run 
+skaffold dev -v debug 
 
 # 5. Esperar a que el Frontend responda (Wait real)
 TARGET_URL="http://$MINIKUBE_IP:31111"

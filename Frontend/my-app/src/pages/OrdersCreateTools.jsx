@@ -87,8 +87,7 @@ const OrdersCreateTools = () => {
           setAlert({ severity: 'error', message: 'No hay cliente seleccionado. Vuelve atrás.' });
           return;
         }
-        const uid = selectedClient.userId || selectedClient.id;
-        const resp = await api.get(`/loan-tools/validate/${uid}/${t.id}`);
+        const resp = await api.get(`/loan-tools/validate/${selectedClient.id}/${t.id}`);
         const already = resp.data === true;
         if (already) {
           setAlert({ severity: 'error', message: 'El cliente ya tiene esta herramienta en otro pedido activo.' });
@@ -146,7 +145,7 @@ const OrdersCreateTools = () => {
       sessionStorage.removeItem('order_items');
       sessionStorage.removeItem('order_loan_id');
       sessionStorage.removeItem('order_resume');
-    } catch (e) { }
+    } catch (e) {}
 
     window.history.pushState({}, '', '/admin/orders/create');
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -161,24 +160,24 @@ const OrdersCreateTools = () => {
       if (it.stock !== undefined && it.qty > it.stock) { setAlert({ severity: 'error', message: `Cantidad solicitada mayor al stock para ${it.name}` }); return; }
     }
 
-    // Ensure a loan draft exists before saving the resume
-    let currentLoanId = loanId || sessionStorage.getItem('order_loan_id');
-    if (!currentLoanId) {
-      setAlert({ severity: 'error', message: 'No se encontró el pedido asociado. Vuelve al paso anterior y crea el pedido con las fechas.' });
-      return;
-    }
+  // Ensure a loan draft exists before saving the resume
+  let currentLoanId = loanId || sessionStorage.getItem('order_loan_id');
+  if (!currentLoanId) {
+    setAlert({ severity: 'error', message: 'No se encontró el pedido asociado. Vuelve al paso anterior y crea el pedido con las fechas.' });
+    return;
+  }
 
-    // Save resume data to sessionStorage so the resume page can read it (include loanId)
-    const resume = { client: selectedClient, items, loanId: currentLoanId };
-    try {
-      sessionStorage.setItem('order_resume', JSON.stringify(resume));
-      // navigate to resume page
-      window.history.pushState({}, '', '/admin/orders/resume');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    } catch (e) {
-      console.warn('Could not save resume data', e);
-      setAlert({ severity: 'error', message: 'No se pudo preparar el resumen del pedido' });
-    }
+  // Save resume data to sessionStorage so the resume page can read it (include loanId)
+  const resume = { client: selectedClient, items, loanId: currentLoanId };
+  try {
+    sessionStorage.setItem('order_resume', JSON.stringify(resume));
+    // navigate to resume page
+    window.history.pushState({}, '', '/admin/orders/resume');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  } catch (e) {
+    console.warn('Could not save resume data', e);
+    setAlert({ severity: 'error', message: 'No se pudo preparar el resumen del pedido' });
+  }
   };
 
   return (
@@ -226,7 +225,7 @@ const OrdersCreateTools = () => {
           console.warn('Could not delete loan draft on cancel', e?.response?.data || e.message || e);
         }
         setItems([]);
-        try { sessionStorage.removeItem('order_selected_client'); sessionStorage.removeItem('order_items'); sessionStorage.removeItem('order_loan_id'); } catch (e) { }
+        try { sessionStorage.removeItem('order_selected_client'); sessionStorage.removeItem('order_items'); sessionStorage.removeItem('order_loan_id'); } catch (e) {}
         setLoanId(null);
         window.history.pushState({}, '', '/admin/orders/create');
         window.dispatchEvent(new PopStateEvent('popstate'));

@@ -59,12 +59,6 @@ public class LoanToolController {
         return ResponseEntity.ok(loanToolService.getFinePreview(loanToolId, state));
     }
 
-    @GetMapping("/validate/{userId}/{toolId}")
-    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
-    public ResponseEntity<Boolean> validateToolLoan(@PathVariable Long userId, @PathVariable Long toolId) {
-        return ResponseEntity.ok(loanToolService.isToolLoanedToUser(toolId, userId));
-    }
-
     // POST
 
     @PostMapping("/add/{loanId}/{toolId}")
@@ -81,8 +75,7 @@ public class LoanToolController {
 
     @PostMapping("/give/all")
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
-    public ResponseEntity<List<LoanTool>> giveAllLoanTools(@RequestParam Long employeeId,
-            @RequestBody List<Long> loanToolIds) {
+    public ResponseEntity<List<LoanTool>> giveAllLoanTools(@RequestParam Long employeeId, @RequestBody List<Long> loanToolIds) {
         return ResponseEntity.ok(loanToolService.giveAllLoanTools(employeeId, loanToolIds));
     }
 

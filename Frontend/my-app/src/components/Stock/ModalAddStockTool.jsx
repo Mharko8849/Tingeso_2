@@ -9,7 +9,7 @@ const ModalAddStockTool = ({ open, onClose, toolId, onAdded }) => {
   const [error, setError] = useState(null);
   const [toolName, setToolName] = useState('');
   const [loadingName, setLoadingName] = useState(false);
-
+  
 
   const handleConfirm = async () => {
     setLoading(true);
@@ -24,14 +24,8 @@ const ModalAddStockTool = ({ open, onClose, toolId, onAdded }) => {
       const qty = Number(quantity || 0);
       if (!qty || qty < 1) throw new Error('Cantidad inválida. Debe ser un número entero mayor o igual a 1');
 
-      // call backend add-stock endpoint: POST /inventory/add-stock?toolId=...&quantity=...&userId=...
-      await api.post('/inventory/add-stock', null, {
-        params: {
-          toolId: toolId,
-          quantity: qty,
-          userId: userId
-        }
-      });
+      // call backend add-stock endpoint: POST /inventory/add-stock/{idUser}/{idTool}?quantity=
+      await api.post(`/inventory/add-stock/${userId}/${toolId}`, null, { params: { quantity: qty } });
 
       if (onAdded) onAdded();
       onClose();

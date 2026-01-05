@@ -54,3 +54,8 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+jib {
+from {
+image = 'public.ecr.aws/amazoncorretto/amazoncorretto:21'
+}
+}

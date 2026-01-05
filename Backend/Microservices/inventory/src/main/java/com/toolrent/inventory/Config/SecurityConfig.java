@@ -34,8 +34,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/inventory/check/**", "/inventory/filter").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/category/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/inventory/category/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/tools/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/images/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->

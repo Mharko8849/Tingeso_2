@@ -15,7 +15,7 @@ const ToolDropdown = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get("/category");
+        const response = await api.get("/inventory/category");
         // Assuming backend returns list of objects { id, name }
         setCategories(response.data.map(c => c.name));
       } catch (error) {
@@ -23,7 +23,7 @@ const ToolDropdown = () => {
       }
     };
 
-    if (open && categories.length === 0) {
+    if (open) {
       fetchCategories();
     }
   }, [open]);

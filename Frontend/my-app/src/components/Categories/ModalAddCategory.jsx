@@ -41,8 +41,8 @@ const ModalAddCategory = ({ open, onClose, onAdded }) => {
   };
 
   return (
-    <div className="mas-backdrop">
-      <div className="mas-modal" style={{ width: '400px' }}>
+    <div className="mas-backdrop" onClick={onClose}>
+      <div className="mas-modal" style={{ width: '400px', position: 'relative' }} onClick={(e) => e.stopPropagation()}>
         <button className="mas-close" onClick={onClose} aria-label="Cerrar">
           ×
         </button>

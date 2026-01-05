@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/http-common';
-import { TOOL_CATEGORIES } from '../../constants/toolCategories';
 import './ModalAddStockTool.css';
 
 const ModalAddNewTool = ({ open, onClose, onAdded }) => {
@@ -9,6 +8,21 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [categoriesList, setCategoriesList] = useState([]);
+
+  useEffect(() => {
+    if (open) {
+      const fetchCategories = async () => {
+        try {
+          const response = await api.get('/inventory/category');
+          setCategoriesList(response.data.map(c => c.name));
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      };
+      fetchCategories();
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -114,8 +128,8 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
   };
 
   return (
-    <div className="mas-backdrop">
-      <div className="mas-modal mas-modal-large" style={{ position: 'relative' }}>
+    <div className="mas-backdrop" onClick={onClose}>
+      <div className="mas-modal mas-modal-large" style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
         <button className="mas-close" onClick={onClose} aria-label="Cerrar">
           ×
         </button>
@@ -134,7 +148,7 @@ const ModalAddNewTool = ({ open, onClose, onAdded }) => {
             style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           >
             <option value="">Seleccionar categoría</option>
-            {TOOL_CATEGORIES.map((cat) => (
+            {categoriesList.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>

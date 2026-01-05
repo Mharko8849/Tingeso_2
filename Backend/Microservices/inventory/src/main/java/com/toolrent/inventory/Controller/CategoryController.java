@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/inventory/category")
 public class CategoryController {
 
     @Autowired
@@ -33,6 +33,7 @@ public class CategoryController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam Long userId) {
+        System.out.println("Creating category: " + category.getName() + " by user: " + userId);
         return ResponseEntity.ok(categoryService.saveCategory(category, userId));
     }
 }
