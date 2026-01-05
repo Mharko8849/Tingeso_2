@@ -30,6 +30,11 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
+        '/tool-states': {
+          target: target,
+          changeOrigin: true,
+          secure: false,
+        },
         '/loans': {
           target: target,
           changeOrigin: true,

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import "../Tools/ToolDropdown.css";
 import { cancelOrderDraft } from "../../services/orderDraft";
 import ModalAddCategory from "../Categories/ModalAddCategory";
+import ModalToolStatesList from "../Tools/ModalToolStatesList";
 
 const AdminDropdown = ({ isAdminOrSuper }) => {
   const [open, setOpen] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showStatesModal, setShowStatesModal] = useState(false);
 
   const toggleMenu = () => setOpen(!open);
   const closeMenu = () => setOpen(false);
@@ -20,6 +22,11 @@ const AdminDropdown = ({ isAdminOrSuper }) => {
   const handleOpenCategoryModal = () => {
     closeMenu();
     setShowCategoryModal(true);
+  };
+
+  const handleOpenStatesModal = () => {
+    closeMenu();
+    setShowStatesModal(true);
   };
 
   return (
@@ -50,9 +57,14 @@ const AdminDropdown = ({ isAdminOrSuper }) => {
                 <h4><strong>Herramientas</strong></h4>
                 <button type="button" className="link-as-anchor" onClick={() => navigate("/inventory")}>Ver inventario</button>
                 {isAdminOrSuper && (
-                  <button type="button" className="link-as-anchor" onClick={handleOpenCategoryModal}>
-                    Crear nueva Categoría
-                  </button>
+                  <>
+                    <button type="button" className="link-as-anchor" onClick={handleOpenCategoryModal}>
+                      Crear nueva Categoría
+                    </button>
+                    <button type="button" className="link-as-anchor" onClick={handleOpenStatesModal}>
+                      Añadir nuevo estado de herramientas
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -63,6 +75,11 @@ const AdminDropdown = ({ isAdminOrSuper }) => {
       <ModalAddCategory 
         open={showCategoryModal} 
         onClose={() => setShowCategoryModal(false)} 
+      />
+      
+      <ModalToolStatesList
+        open={showStatesModal}
+        onClose={() => setShowStatesModal(false)}
       />
     </>
   );
