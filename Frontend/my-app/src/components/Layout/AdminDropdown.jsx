@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import "../Tools/ToolDropdown.css";
 import { cancelOrderDraft } from "../../services/orderDraft";
+import ModalAddCategory from "../Categories/ModalAddCategory";
 
 const AdminDropdown = ({ isAdminOrSuper }) => {
   const [open, setOpen] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
   const toggleMenu = () => setOpen(!open);
   const closeMenu = () => setOpen(false);
 
@@ -12,6 +15,11 @@ const AdminDropdown = ({ isAdminOrSuper }) => {
     window.history.pushState({}, "", path);
     window.dispatchEvent(new PopStateEvent("popstate"));
     closeMenu();
+  };
+
+  const handleOpenCategoryModal = () => {
+    closeMenu();
+    setShowCategoryModal(true);
   };
 
   return (
@@ -41,11 +49,21 @@ const AdminDropdown = ({ isAdminOrSuper }) => {
               <div className="tool-section">
                 <h4><strong>Herramientas</strong></h4>
                 <button type="button" className="link-as-anchor" onClick={() => navigate("/inventory")}>Ver inventario</button>
+                {isAdminOrSuper && (
+                  <button type="button" className="link-as-anchor" onClick={handleOpenCategoryModal}>
+                    Crear nueva Categoría
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <ModalAddCategory 
+        open={showCategoryModal} 
+        onClose={() => setShowCategoryModal(false)} 
+      />
     </>
   );
 };

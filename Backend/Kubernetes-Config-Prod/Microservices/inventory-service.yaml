@@ -124,12 +124,24 @@ spec:
               name: global-config
               key: MS_KARDEX_URL
 
+        - name: IMAGES_PATH
+          value: "file:/app/images/"
+
+        volumeMounts:
+        - name: images-storage
+          mountPath: /app/images
+
         resources:
           requests:
             memory: "256Mi"
             cpu: "250m"
           limits:
             memory: "512Mi"
+
+      volumes:
+      - name: images-storage
+        persistentVolumeClaim:
+          claimName: images-pvc-prod
 
 ---
 
