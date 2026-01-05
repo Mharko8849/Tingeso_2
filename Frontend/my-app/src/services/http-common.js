@@ -14,7 +14,7 @@ api.interceptors.request.use(
     // — if we attach an expired token the backend will immediately return 401.
     const url = config.url || '';
     const isAuthEndpoint = url.includes('/users/login') || url.includes('/users/register');
-    const isPublicEndpoint = url.includes('/kardex/ranking') || url.includes('/images/') || url.includes('/category');
+    const isPublicEndpoint = url.includes('/kardex/ranking') || url.includes('/images/');
 
     if (isAuthEndpoint || isPublicEndpoint) {
       return config;
@@ -23,9 +23,12 @@ api.interceptors.request.use(
     if (keycloak?.authenticated) {
       try {
         await keycloak.updateToken(30);
-        config.headers.Authorization = `Bearer ${keycloak.token}`;
       } catch (e) {
         console.warn("Failed to refresh token", e);
+      }
+      // Always attach token if authenticated, even if updateToken failed (token might still be valid)
+      if (keycloak.token) {
+        config.headers.Authorization = `Bearer ${keycloak.token}`;
       }
     }
     else {
