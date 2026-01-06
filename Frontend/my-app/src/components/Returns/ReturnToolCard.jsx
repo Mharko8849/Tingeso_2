@@ -23,14 +23,15 @@ const daysBetween = (start, end) => {
 };
 
 const ReturnToolCard = ({ item, onStateChange, disabled = false }) => {
-  const name = item.idTool?.toolName || `Herramienta ${item.idTool?.id}`;
+  const name = item.tool?.name || `Herramienta ${item.tool?.id || item.id}`;
   const activity = item.toolActivity || '-';
-  const priceRent = Number(item.idTool?.priceRent ?? item.idTool?.price ?? item.price ?? 0) || 0;
+  const priceRent = Number(item.tool?.amounts?.priceRent ?? 0);
   const initialFine = Number(item.fine ?? item.debt ?? 0) || 0; // use fine if available, fallback to debt
+  const imageUrl = item.tool?.image || null;
 
   // Try to compute number of rental days from loan info if available
-  const initDate = item.idLoan?.initDate || item.idLoan?.init_date || null;
-  const returnDate = item.idLoan?.returnDate || item.idLoan?.return_date || null;
+  const initDate = item.loan?.initDate || null;
+  const returnDate = item.loan?.returnDate || null;
   const days = (initDate && returnDate) ? daysBetween(initDate, returnDate) : 1;
   const totalCost = priceRent * days;
 
@@ -91,9 +92,9 @@ const ReturnToolCard = ({ item, onStateChange, disabled = false }) => {
       <div className="tool-rect">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 56, height: 56, borderRadius: 8, overflow: 'hidden', background: '#f3f4f6', flexShrink: 0 }}>
-            {item.idTool?.imageUrl ? (
+            {imageUrl ? (
               <img
-                src={item.idTool.imageUrl}
+                src={imageUrl}
                 alt={name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />

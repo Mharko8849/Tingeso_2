@@ -218,7 +218,7 @@ const KardexPage = () => {
                   Limpiar filtros
                 </button>
 
-                <ReportKardex rows={filtered} />
+                <ReportKardex dateFrom={dateFrom} dateTo={dateTo} />
               </div>
             </div>
           </div>

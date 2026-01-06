@@ -59,12 +59,22 @@ public class LoanToolController {
         return ResponseEntity.ok(loanToolService.getFinePreview(loanToolId, state));
     }
 
+    @GetMapping("/validate/{userId}/{toolId}")
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
+    public ResponseEntity<Boolean> validateToolForUser(@PathVariable Long userId, @PathVariable Long toolId) {
+        return ResponseEntity.ok(loanToolService.isToolLoanedToUser(toolId, userId));
+    }
+
     // POST
 
     @PostMapping("/add/{loanId}/{toolId}")
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE', 'SUPERADMIN')")
-    public ResponseEntity<LoanTool> createLoanTool(@PathVariable Long loanId, @PathVariable Long toolId) {
-        return ResponseEntity.ok(loanToolService.createLoanTool(loanId, toolId));
+    public ResponseEntity<?> createLoanTool(@PathVariable Long loanId, @PathVariable Long toolId) {
+        try {
+            return ResponseEntity.ok(loanToolService.createLoanTool(loanId, toolId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/give/{loanToolId}")

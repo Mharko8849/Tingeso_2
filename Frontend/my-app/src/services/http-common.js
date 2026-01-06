@@ -13,7 +13,7 @@ api.interceptors.request.use(
     // Don't attach an Authorization header for the backend login/register endpoints
     // — if we attach an expired token the backend will immediately return 401.
     const url = config.url || '';
-    const isAuthEndpoint = url.includes('/users/login') || url.includes('/users/register');
+    const isAuthEndpoint = url.includes('/users/login') || url.includes('/users/register/client');
     const isPublicEndpoint = url.includes('/kardex/ranking') || url.includes('/images/') || (url.includes('/inventory/category') && config.method === 'get');
 
     if (isAuthEndpoint || isPublicEndpoint) {

@@ -43,7 +43,8 @@ const Orders = () => {
           });
         }
         const item = map.get(tid);
-        if (entry.toolState === 'DISPONIBLE') {
+        const stateName = entry.toolStateName || entry.toolState;
+        if (stateName === 'DISPONIBLE') {
           item.stock = (item.stock || 0) + (entry.stockTool || 0);
         }
       });

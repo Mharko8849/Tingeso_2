@@ -24,8 +24,8 @@ const ModalAddStockTool = ({ open, onClose, toolId, onAdded }) => {
       const qty = Number(quantity || 0);
       if (!qty || qty < 1) throw new Error('Cantidad inválida. Debe ser un número entero mayor o igual a 1');
 
-      // call backend add-stock endpoint: POST /inventory/add-stock/{idUser}/{idTool}?quantity=
-      await api.post(`/inventory/add-stock/${userId}/${toolId}`, null, { params: { quantity: qty } });
+      // call backend add-stock endpoint: POST /inventory/add-stock?toolId=...&quantity=...&userId=...
+      await api.post(`/inventory/add-stock`, null, { params: { toolId, quantity: qty, userId } });
 
       if (onAdded) onAdded();
       onClose();
@@ -63,13 +63,11 @@ const ModalAddStockTool = ({ open, onClose, toolId, onAdded }) => {
   if (!open) return null;
 
   return (
-    <div className="mas-backdrop">
-      <div className="mas-modal">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-          </div>
+    <div className="mas-backdrop" onClick={onClose}>
+      <div className="mas-modal" onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h3 style={{ margin: 0 }}>Añadir stock</h3>
-          <div style={{ width: 60 }} />
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}>&times;</button>
         </div>
 
         <p style={{ marginTop: 8 }}>Herramienta ID: <strong>{toolId}</strong></p>

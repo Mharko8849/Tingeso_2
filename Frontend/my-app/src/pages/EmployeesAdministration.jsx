@@ -352,7 +352,7 @@ const EmployeesAdministration = () => {
                         <td style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.name}</td>
                         <td style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.lastName}</td>
                         <td style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.email}</td>
-                        <td style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.rol}</td>
+                        <td style={{ padding: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.rol || u.role || 'EMPLOYEE'}</td>
                         <td style={{ padding: 8, whiteSpace: 'nowrap' }}>
                           <button
                             onClick={() => confirmDelete(u)}

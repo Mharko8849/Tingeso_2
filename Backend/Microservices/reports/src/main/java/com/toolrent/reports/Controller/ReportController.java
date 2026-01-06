@@ -48,4 +48,24 @@ public class ReportController {
     public ResponseEntity<Report> generateDelayedClientsReport() {
         return ResponseEntity.ok(reportService.generateDelayedClientsReport());
     }
+
+    @PostMapping("/generate/employees")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    public ResponseEntity<Report> generateEmployeesReport() {
+        return ResponseEntity.ok(reportService.generateEmployeesReport());
+    }
+
+    @PostMapping("/generate/clients")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'EMPLOYEE')")
+    public ResponseEntity<Report> generateClientsReport() {
+        return ResponseEntity.ok(reportService.generateClientsReport());
+    }
+
+    @PostMapping("/generate/kardex")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN', 'EMPLOYEE')")
+    public ResponseEntity<Report> generateKardexReport(
+            @RequestParam(required = false) Date initDate,
+            @RequestParam(required = false) Date finalDate) {
+        return ResponseEntity.ok(reportService.generateKardexReport(initDate, finalDate));
+    }
 }

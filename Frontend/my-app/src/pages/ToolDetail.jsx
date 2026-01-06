@@ -58,7 +58,7 @@ const ToolDetail = (props) => {
       // Compute stock by state from inventory entries of this tool
       const summary = { DISPONIBLE: 0, PRESTADA: 0, EN_REPARACION: 0, DADA_DE_BAJA: 0 };
       for (const e of arr) {
-        const st = String(e.toolState || '').toUpperCase();
+        const st = String(e.toolStateName || e.toolState || '').toUpperCase();
         const qty = Number(e.stockTool) || 0;
         if (summary.hasOwnProperty(st)) summary[st] += qty;
       }

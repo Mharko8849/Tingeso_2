@@ -26,6 +26,12 @@ public class ReportService {
     @Value("${microservices.kardex.url}")
     private String kardexServiceUrl;
 
+    @Value("${microservices.users.url}")
+    private String usersServiceUrl;
+
+    @Value("${microservices.clients.url}")
+    private String clientsServiceUrl;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public List<Report> getAllReports() {
@@ -98,6 +104,66 @@ public class ReportService {
             return reportRepository.save(report);
         } catch (Exception e) {
             throw new RuntimeException("Error generando reporte de clientes con atrasos: " + e.getMessage());
+        }
+    }
+
+    public Report generateEmployeesReport() {
+        try {
+            String url = usersServiceUrl + "/employees";
+            Object employeesData = restTemplate.getForObject(url, Object.class);
+            String jsonData = objectMapper.writeValueAsString(employeesData);
+
+            Report report = new Report();
+            report.setReportName("Reporte de Empleados");
+            report.setGeneratedDate(new Date(System.currentTimeMillis()));
+            report.setType("EMPLEADOS");
+            report.setData(jsonData);
+
+            return reportRepository.save(report);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generando reporte de empleados: " + e.getMessage());
+        }
+    }
+
+    public Report generateClientsReport() {
+        try {
+            String url = clientsServiceUrl;
+            Object clientsData = restTemplate.getForObject(url, Object.class);
+            String jsonData = objectMapper.writeValueAsString(clientsData);
+
+            Report report = new Report();
+            report.setReportName("Reporte General de Clientes");
+            report.setGeneratedDate(new Date(System.currentTimeMillis()));
+            report.setType("CLIENTES");
+            report.setData(jsonData);
+
+            return reportRepository.save(report);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generando reporte de clientes: " + e.getMessage());
+        }
+    }
+
+    public Report generateKardexReport(Date initDate, Date finalDate) {
+        try {
+            String url = kardexServiceUrl + "/filter";
+            if (initDate != null || finalDate != null) {
+                url += "?";
+                if (initDate != null) url += "initDate=" + initDate + "&";
+                if (finalDate != null) url += "finalDate=" + finalDate;
+            }
+            
+            Object kardexData = restTemplate.getForObject(url, Object.class);
+            String jsonData = objectMapper.writeValueAsString(kardexData);
+
+            Report report = new Report();
+            report.setReportName("Reporte de Movimientos (Kardex)");
+            report.setGeneratedDate(new Date(System.currentTimeMillis()));
+            report.setType("KARDEX");
+            report.setData(jsonData);
+
+            return reportRepository.save(report);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generando reporte de kardex: " + e.getMessage());
         }
     }
 }

@@ -79,7 +79,7 @@ const ReturnsLoanSummary = () => {
               <p style={{ margin: '4px 0 0', color: '#4b5563' }}>Revisa los datos del pedido y selecciona el estado de cada herramienta antes de confirmar la devolución.</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <BackButton to={`/admin/returns/client/${loan?.idUser?.id || ''}`} />
+              <BackButton to={`/admin/returns/client/${loan?.client?.id || ''}`} />
             </div>
           </div>
           {loading ? <p>Cargando resumen...</p> : (
@@ -89,10 +89,10 @@ const ReturnsLoanSummary = () => {
                   <section style={{ flex: '0 0 320px', background: '#fff', padding: 14, borderRadius: 8, border: '1px solid #e5e7eb' }}>
                     <h4 style={{ margin: 0, fontSize: 15 }}>Cliente</h4>
                     <div style={{ marginTop: 10 }}>
-                      <div style={{ fontWeight: 800 }}>{loan.idUser ? (loan.idUser.name ? `${loan.idUser.name} ${loan.idUser.lastName || ''}` : (loan.idUser.username || loan.idUser.email)) : ''}</div>
-                      <div style={{ marginTop: 4, fontSize: 16, color: '#374151' }}>{loan.idUser?.username || loan.idUser?.email}</div>
-                      {loan.idUser?.email && <div style={{ marginTop: 2, fontSize: 14, color: '#4b5563' }}>{loan.idUser.email}</div>}
-                      {loan.idUser?.rut && <div style={{ marginTop: 6, fontSize: 16 }}>RUT: {loan.idUser.rut}</div>}
+                      <div style={{ fontWeight: 800 }}>{loan.client ? (loan.client.name ? `${loan.client.name} ${loan.client.lastName || ''}` : (loan.client.username || loan.client.email)) : ''}</div>
+                      <div style={{ marginTop: 4, fontSize: 16, color: '#374151' }}>{loan.client?.username || loan.client?.email}</div>
+                      {loan.client?.email && <div style={{ marginTop: 2, fontSize: 14, color: '#4b5563' }}>{loan.client.email}</div>}
+                      {loan.client?.rut && <div style={{ marginTop: 6, fontSize: 16 }}>RUT: {loan.client.rut}</div>}
                     </div>
                   </section>
 
@@ -154,12 +154,13 @@ const ReturnsLoanSummary = () => {
                                   const meResp = await api.get('/users/me');
                                   const employeeId = meResp?.data?.id;
                                   if (!employeeId) throw new Error('No pude obtener tu id de usuario (employee)');
-                                  const url = `/api/loantool/receive/all/loan/${loan.id}/user/${employeeId}`;
-                                  await api.post(url, payload);
+                                  // Correct URL structure: /loan-tools/receive/all/{loanId}?employeeId={employeeId}
+                                  const url = `/loan-tools/receive/all/${loan.id}`;
+                                  await api.post(url, payload, { params: { employeeId } });
                                   try { alert?.show?.({ severity: 'success', message: 'Devolución completada correctamente.', autoHideMs: 3000 }); } catch (e) {}
-                                  await api.get(`/api/loantool/loan/${loan.id}`).then(r => setItems(r.data || []));
-                                  await api.get(`/api/loan/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
-                                  try { const tf = await api.get(`/api/loantool/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
+                                  await api.get(`/loan-tools/loan/${loan.id}`).then(r => setItems(r.data || []));
+                                  await api.get(`/loans/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
+                                  try { const tf = await api.get(`/loan-tools/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
                                   setStateToolMap({});
                                 } catch (err) {
                                   console.error('Error al devolver herramientas', err?.response ?? err);
@@ -207,9 +208,9 @@ const ReturnsLoanSummary = () => {
             onPaid={async () => {
               // refresh loan/items and totals after paying repairs
               if (!loan) return;
-              await api.get(`/api/loantool/loan/${loan.id}`).then(r => setItems(r.data || []));
-              await api.get(`/api/loan/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
-              try { const tf = await api.get(`/api/loantool/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
+              await api.get(`/loan-tools/loan/${loan.id}`).then(r => setItems(r.data || []));
+              await api.get(`/loans/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
+              try { const tf = await api.get(`/loan-tools/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
             }}
           />
 
@@ -220,9 +221,9 @@ const ReturnsLoanSummary = () => {
             totalFine={totalFine}
             onPaid={async () => {
               if (!loan) return;
-              await api.get(`/api/loantool/loan/${loan.id}`).then(r => setItems(r.data || []));
-              await api.get(`/api/loan/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
-              try { const tf = await api.get(`/api/loantool/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
+              await api.get(`/loan-tools/loan/${loan.id}`).then(r => setItems(r.data || []));
+              await api.get(`/loans/${loan.id}`).then(r => setLoan(r.data)).catch(() => {});
+              try { const tf = await api.get(`/loan-tools/total/fine/${loan.id}`); setTotalFine(Number(tf.data || 0)); } catch (e) { setTotalFine(0); }
             }}
           />
         </div>

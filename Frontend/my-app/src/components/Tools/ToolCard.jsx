@@ -51,7 +51,7 @@ const ToolCard = ({ tool = {}, style = {}, onClick, showAdd = false, onAdd = nul
           </button>
         )}
       
-        <div style={isVertical ? { width: '100%', height: '200px', background: '#f6f7fb', position: 'relative' } : { flex: '0 0 160px', background: '#f6f7fb', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+        <div style={isVertical ? { width: '100%', height: '160px', background: '#f6f7fb', position: 'relative' } : { flex: '0 0 160px', background: '#f6f7fb', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
           {/* Visits Badge */}
           {tool.visits !== undefined && (
             <div style={{
@@ -84,7 +84,7 @@ const ToolCard = ({ tool = {}, style = {}, onClick, showAdd = false, onAdd = nul
 
         <div style={{ padding: 14, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: '1 1 auto' }}>
           <div>
-            <h6 style={{ margin: '0 0 8px 0', fontSize: '1rem', color: '#0f172a' }}>{tool.name}</h6>
+            <h6 style={{ margin: '0 0 8px 0', fontSize: '1rem', color: '#0f172a', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tool.name}</h6>
             <p style={{ margin: 0, color: '#334155', fontWeight: 600 }}>{priceLabel}</p>
           </div>
           <div style={{ marginTop: 8, display: 'flex', justifyContent: 'flex-end', color: '#64748b', fontSize: 13 }}>

@@ -391,7 +391,7 @@ public class LoanToolService {
         }
     }
 
-    private boolean isToolLoanedToUser(Long toolId, Long userId) {
+    public boolean isToolLoanedToUser(Long toolId, Long userId) {
         List<LoanFull> userLoans = loanService.getAllLoansByUserId(userId);
         int i = 0;
         while (i < userLoans.size()) {

@@ -47,13 +47,25 @@ const ClientsAdmin = () => {
     setLoading(true);
     setError(null);
     try {
+      // Use /clients endpoint to get full client details like loan count and state
       const params = {};
       if (stateVal) params.state = stateVal;
-      const resp = await api.get('/users/filter', { params });
-      const data = resp.data || [];
+      const resp = await api.get('/clients', { params });
+      const rawData = resp.data || [];
+      
+      // Map ClientFull structure to flat object for table
+      let data = rawData.map(c => ({
+          ...c.user, 
+          id: c.user.id,     // use user ID for display consistency with users table
+          clientId: c.id,    // keep actual client ID reference
+          loans: c.loans,
+          stateClient: c.stateClient
+      }));
+
       // keep only users whose role looks like CLIENT as a safeguard
       let filtered = (data || []).filter((u) => {
-        const r = (u.rol || u.role || '').toString().toUpperCase();
+        // If role is missing, assume CLIENT if it came from /clients endpoint
+        const r = (u.rol || u.role || 'CLIENT').toString().toUpperCase();
         return r === 'CLIENT' || r === 'CLIENTE';
       });
 
