@@ -92,7 +92,7 @@ const Loans = () => {
       const term = q.toLowerCase();
       data = data.filter((l) => {
         const idStr = String(l.id || '');
-        const clientName = l.idUser ? ((l.idUser.name ? `${l.idUser.name} ${l.idUser.lastName || ''}` : (l.idUser.username || l.idUser.email || ''))) : '';
+        const clientName = l.client ? ((l.client.name ? `${l.client.name} ${l.client.lastName || ''}` : (l.client.username || l.client.email || ''))) : '';
         return idStr.includes(term) || clientName.toLowerCase().includes(term);
       });
     }
@@ -197,7 +197,7 @@ const Loans = () => {
                       <div style={{ display: 'grid', gridTemplateColumns: '80px 1.2fr 1fr 1fr 1fr 160px 120px', alignItems: 'center', gap: 12, width: '100%' }}>
                         <div style={{ fontWeight: 800, fontSize: 16 }}>#{l.id}</div>
                         <div style={{ fontSize: 14, color: '#374151' }}>
-                          {l.idUser ? (l.idUser.name ? `${l.idUser.name} ${l.idUser.lastName || ''}` : (l.idUser.username || l.idUser.email)) : '—'}
+                          {l.client ? (l.client.name ? `${l.client.name} ${l.client.lastName || ''}` : (l.client.username || l.client.email)) : '—'}
                         </div>
                         <div style={{ fontSize: 14, color: '#374151' }}>{l.initDate}</div>
                         <div style={{ fontSize: 14, color: '#374151' }}>{l.returnDate}</div>

@@ -51,5 +51,5 @@ tasks.named('test') {
 
 jib {
 from {
-		image = 'public.ecr.aws/amazoncorretto/amazoncorretto:21'
+		image = 'amazoncorretto:21'
 }}

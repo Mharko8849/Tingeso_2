@@ -68,7 +68,7 @@ const ReportKardex = ({ filename, dateFrom, dateTo }) => {
           formatDate(m.date),
           renderUser(m.idEmployee ?? m.employee ?? m.employeeId),
           renderTool(m.tool ?? m.idTool),
-          renderUser(m.user ?? m.idUser),
+          renderUser(m.client ?? m.user ?? m.idUser),
           String(m.type || '').toUpperCase(),
           m.qty ?? m.quantity ?? m.cantidad ?? m.cant ?? '—',
           m.cost ?? m.amount ?? m.balance ?? m.stock ?? '—'

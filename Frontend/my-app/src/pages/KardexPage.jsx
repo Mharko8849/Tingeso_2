@@ -131,7 +131,7 @@ const KardexPage = () => {
 
     // Use the same render helpers so the search matches what's displayed (e.g. "1 - Marco")
     const empDisplay = String(renderUser(m.idEmployee ?? m.employee ?? m.employeeId)).toLowerCase();
-    const userDisplay = String(renderUser(m.user ?? m.idUser)).toLowerCase();
+    const userDisplay = String(renderUser(m.client ?? m.user ?? m.idUser)).toLowerCase();
     const toolDisplay = String(renderTool(m.tool ?? m.idTool)).toLowerCase();
     const moveId = String(m.id ?? m._id ?? '').toLowerCase();
     const moveType = String(m.type || '').toLowerCase();
@@ -285,7 +285,7 @@ const KardexPage = () => {
                       <th style={{ padding: '8px 12px' }}>Fecha</th>
                       <th style={{ padding: '8px 12px' }}>Empleado (ID)</th>
                       <th style={{ padding: '8px 12px' }}>Herramienta (ID - Nombre)</th>
-                      <th style={{ padding: '8px 12px' }}>Usuario</th>
+                      <th style={{ padding: '8px 12px' }}>Cliente</th>
                       <th style={{ padding: '8px 12px' }}>Tipo de Movimiento</th>
                       <th style={{ padding: '8px 12px' }}>Cantidad</th>
                       <th style={{ padding: '8px 12px' }}>Monto</th>
@@ -300,7 +300,7 @@ const KardexPage = () => {
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{formatDate(m.date)}</td>
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{renderUser(m.idEmployee ?? m.employee ?? m.employeeId)}</td>
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{renderTool(m.tool ?? m.idTool)}</td>
-                        <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{renderUser(m.user ?? m.idUser)}</td>
+                        <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{renderUser(m.client ?? m.user ?? m.idUser)}</td>
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{String(m.type || '').toUpperCase()}</td>
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{m.qty ?? m.quantity ?? m.cantidad ?? m.cant ?? '—'}</td>
                         <td style={{ padding: '10px 12px', verticalAlign: 'top' }}>{m.cost ?? m.amount ?? m.balance ?? m.stock ?? '—'}</td>

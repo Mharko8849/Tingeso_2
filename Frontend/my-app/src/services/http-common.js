@@ -23,12 +23,9 @@ api.interceptors.request.use(
     if (keycloak?.authenticated) {
       try {
         await keycloak.updateToken(30);
+        config.headers.Authorization = `Bearer ${keycloak.token}`;
       } catch (e) {
         console.warn("Failed to refresh token", e);
-      }
-      // Always attach token if authenticated, even if updateToken failed (token might still be valid)
-      if (keycloak.token) {
-        config.headers.Authorization = `Bearer ${keycloak.token}`;
       }
     }
     else {

@@ -47,7 +47,7 @@ build:
       context: Backend/Microservices/users
       jib: {}
 
-    - image: local-mharko/frontend
+    - image: mharko/frontend
       context: Frontend/my-app
       docker:
         dockerfile: Dockerfile

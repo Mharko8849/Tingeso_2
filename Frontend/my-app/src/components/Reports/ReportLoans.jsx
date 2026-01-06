@@ -18,7 +18,7 @@ const ReportLoans = ({ rows = [], filename }) => {
 
     const mapped = rows.map(l => [
       l.id ?? '',
-      l.idUser ? (l.idUser.name ? `${l.idUser.name} ${l.idUser.lastName || ''}` : (l.idUser.username || l.idUser.email || '')) : '—',
+      l.client ? (l.client.name ? `${l.client.name} ${l.client.lastName || ''}` : (l.client.username || l.client.email || '')) : '—',
       l.initDate ?? '',
       l.returnDate ?? '',
       today,
